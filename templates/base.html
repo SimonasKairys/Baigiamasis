@@ -46,13 +46,14 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">User login</a>
+                   {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_car' %}">Add car</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Uzduotys">Užduotys</a>
+                        <a class="nav-link" href="{% url 'your_car_info' %}">Car info</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Paslaugos">Paslaugos</a>
-                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/Apie">Apie</a>
                     </li>

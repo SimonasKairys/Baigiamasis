@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.contrib.auth.models import User
 
 
 class Asmenys(models.Model):
@@ -25,3 +26,37 @@ class Asmenys(models.Model):
     def __str__(self):
         return f'{self.user_name}, {self.user_surname}, {self.user_birth_date}, {self.user_age}'
 
+
+class Car(models.Model):
+
+    make = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.make
+
+
+class CarModel(models.Model):
+
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    model = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.model
+
+
+class UserCar(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    car_model = models.CharField(max_length=50)
+    car_year = models.IntegerField()
+    fuel_type = models.CharField(max_length=50)
+    odometer_value = models.IntegerField()
+    fuel_in_tank = models.FloatField()
+
+
+class GasStation(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=200)
+    user_car = models.ForeignKey(UserCar, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Your Car Information</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Car Model</th>
+        <th>Car Year</th>
+        <th>Fuel Type</th>
+        <th>Odometer Value</th>
+        <th>Fuel in Tank</th>
+        <th>Gas Station Name</th>
+        <th>Gas Station Location</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user_car in user_cars %}
+        <tr>
+          <td>{{ user_car.car_model }}</td>
+          <td>{{ user_car.car_year }}</td>
+          <td>{{ user_car.fuel_type }}</td>
+          <td>{{ user_car.odometer_value }}</td>
+          <td>{{ user_car.fuel_in_tank }}</td>
+          <td>{{ user_car.gasstation_set.first.name }}</td>
+          <td>{{ user_car.gasstation_set.first.location }}</td>
+          <td>
+            <a href="{% url 'edit_car' user_car.id %}">Edit</a> |
+            <a href="{% url 'delete_car' user_car.id %}"
+               onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

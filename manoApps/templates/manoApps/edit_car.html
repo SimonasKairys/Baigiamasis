@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Edit Car and Gas Station Information</h2>
+  <form method="post">
+    {% csrf_token %}
+    <h3>Car Information</h3>
+    {{ form_car.as_p }}
+    <h3>Gas Station Information</h3>
+    {{ form_gas_station.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+{% endblock %}
+
