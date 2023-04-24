@@ -31,13 +31,24 @@
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.location }}</td>
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.date }}</td>
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.price }}</td>
-          <td  class="text-nowrap text-center">
-            <a href="{% url 'edit_car' user_car.id %}">Edit</a> |
-            <a href="{% url 'delete_car' user_car.id %}"
-               onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
-          </td>
+          <td colspan="10" class="text-nowrap text-center">
+              <div class="d-inline-block">
+                <a class="btn btn-primary btn-sm m-1" href="{% url 'edit_car' user_car.id %}">Edit</a>
+              </div>
+              <div class="d-inline-block">
+                <a class="btn btn-danger btn-sm m-1" href="{% url 'delete_car' user_car.id %}"
+                   onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
+              </div>
+              <div class="d-inline-block">
+                <a class="btn btn-success btn-sm m-1" href="{% url 'add_mileage' user_car.id %}">Update mileage</a>
+              </div>
+            </td>
         </tr>
+
       {% endfor %}
     </tbody>
   </table>
+  <p>
+    <a href="{% url 'Index' %}">Back to Home</a>
+  </p>
 {% endblock %}

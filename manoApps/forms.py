@@ -16,12 +16,12 @@ class AddCarForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'car' in self.data:  # Check if the form is submitted with a selected car
+        if 'car' in self.data:
             try:
                 car_id = int(self.data.get('car'))
                 self.fields['car_model'].queryset = CarModel.objects.filter(car_id=car_id)
             except (ValueError, TypeError):
-                pass  # Invalid input, ignore and set an empty queryset
+                pass
         elif self.initial.get('car') is not None:
             self.fields['car_model'].queryset = CarModel.objects.filter(car=self.initial.get('car'))
 
@@ -47,3 +47,12 @@ class EditGasStationForm(forms.ModelForm):
             'date',
             'price'
         ]
+
+
+class AddMileageForm(forms.Form):
+    odometer_value = forms.IntegerField(label='Odometer Value')
+    fuel_in_tank = forms.IntegerField(label='Fuel in Tank')
+    gas_station_name = forms.CharField(label='Gas Station Name', max_length=100)
+    gas_station_location = forms.CharField(label='Gas Station Location', max_length=100)
+    date = forms.DateField()
+    price = forms.DecimalField(label='Price EUR', max_digits=5, decimal_places=3)
