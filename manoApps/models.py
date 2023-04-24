@@ -46,6 +46,7 @@ class CarModel(models.Model):
 
 class UserCar(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE)
     car_model = models.CharField(max_length=50)
     car_year = models.IntegerField()
     fuel_type = models.CharField(max_length=50)
@@ -57,6 +58,8 @@ class GasStation(models.Model):
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=200)
     user_car = models.ForeignKey(UserCar, on_delete=models.CASCADE)
+    date = models.DateField()
+    price = models.DecimalField(max_digits=10, decimal_places=3)
 
     def __str__(self):
         return self.name

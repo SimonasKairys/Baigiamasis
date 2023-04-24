@@ -12,6 +12,8 @@
         <th>Fuel in Tank</th>
         <th>Gas Station Name</th>
         <th>Gas Station Location</th>
+        <th>Date</th>
+        <th>Price</th>
       </tr>
     </thead>
     <tbody>
@@ -24,6 +26,8 @@
           <td>{{ user_car.fuel_in_tank }}</td>
           <td>{{ user_car.gasstation_set.first.name }}</td>
           <td>{{ user_car.gasstation_set.first.location }}</td>
+          <td>{{ user_car.gasstation_set.first.date }}</td>
+          <td>{{ user_car.gasstation_set.first.price }}</td>
           <td>
             <a href="{% url 'edit_car' user_car.id %}">Edit</a> |
             <a href="{% url 'delete_car' user_car.id %}"

@@ -4,6 +4,8 @@ from .models import Car, CarModel, UserCar, GasStation
 
 class AddCarForm(forms.Form):
     car = forms.ModelChoiceField(queryset=Car.objects.all())
+    # car_model = forms.ModelChoiceField(queryset=CarModel.objects.none(), required=True, label='Car Model')
+    # car_model = forms.ModelChoiceField(queryset=CarModel.objects.none())
     car_model = forms.CharField()
     car_year = forms.IntegerField()
     fuel_type = forms.ChoiceField(choices=[('gasoline', 'Gasoline'), ('diesel', 'Diesel')])
@@ -11,17 +13,15 @@ class AddCarForm(forms.Form):
     fuel_in_tank = forms.FloatField()
     gas_station_name = forms.CharField(required=True, label='Gas Station Name')
     gas_station_location = forms.CharField(required=True, label='Gas Station Location')
+    date = forms.DateField()
+    price = forms.DecimalField(max_digits=10, decimal_places=3)
 
     def __init__(self, *args, **kwargs):
+        car_id = kwargs.pop('car_id', None)
         super().__init__(*args, **kwargs)
-        self.fields['car_model'].queryset = CarModel.objects.none()
 
-        if 'car' in self.data:
-            try:
-                car_id = int(self.data.get('car'))
-                self.fields['car_model'].queryset = CarModel.objects.filter(car_id=car_id).order_by('model')
-            except (ValueError, TypeError):
-                pass
+        if car_id:
+            self.fields['car_model'].queryset = CarModel.objects.filter(car_id=car_id).order_by('model')
 
 
 class EditCarForm(forms.ModelForm):
@@ -42,4 +42,6 @@ class EditGasStationForm(forms.ModelForm):
         fields = [
             'name',
             'location',
+            'date',
+            'price'
         ]

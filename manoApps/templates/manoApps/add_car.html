@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
 <table>
   <h2>Add a car</h2>
     <form method="post">
-
       {% csrf_token %}
+<!--      {{ form.car.label_tag }} {{ form.car }}-->
+<!--      {{ form.car_model.label_tag }} {{ form.car_model }}-->
       {{ form.as_p }}
       <button type="submit">Add car</button>
     </form>
+  <script>
+  document.getElementById('id_car').onchange = function() {
+    this.form.submit();
+  }
+</script>
 </table>
 {% endblock %}

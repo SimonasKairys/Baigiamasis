@@ -2,8 +2,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import UserCar, GasStation
+from django.http import JsonResponse
+from .models import UserCar, GasStation, CarModel
 from .forms import AddCarForm, EditCarForm, EditGasStationForm
+from datetime import date
 
 
 def home_page(request):
@@ -47,6 +49,8 @@ def logged_home(request):
 
 @login_required
 def add_car(request):
+    car_id = request.GET.get('car') if request.method == 'GET' else None
+
     if request.method == 'POST':
         form = AddCarForm(request.POST)
         if form.is_valid():
@@ -63,15 +67,23 @@ def add_car(request):
             gas_station = GasStation(
                 name=form.cleaned_data['gas_station_name'],
                 location=form.cleaned_data['gas_station_location'],
+                date=form.cleaned_data['date'],
+                price=form.cleaned_data['price'],
                 user_car=user_car
             )
             gas_station.save()
 
             return redirect('your_car_info')
     else:
-        form = AddCarForm()
+        form = AddCarForm(car_id=car_id, initial={'date': date.today()})
 
     return render(request, 'manoApps/add_car.html', {'form': form})
+
+
+# def car_models(request, car_id):
+#     car_models = CarModel.objects.filter(car_id=car_id).order_by('model')
+#     car_models_json = [{"id": car_model.id, "model": car_model.model} for car_model in car_models]
+#     return JsonResponse({"car_models": car_models_json})
 
 
 def your_car_info(request):
@@ -94,7 +106,7 @@ def edit_car(request, car_id):
             return redirect('your_car_info')
     else:
         form_car = EditCarForm(instance=user_car)
-        form_gas_station = EditGasStationForm(instance=gas_station)
+        form_gas_station = EditGasStationForm(instance=gas_station, initial={'date': date.today()})
 
     return render(request, 'manoApps/edit_car.html', {'form_car': form_car, 'form_gas_station': form_gas_station})
 
@@ -108,5 +120,3 @@ def delete_car(request, car_id):
     user_car.delete()
 
     return redirect('your_car_info')
-
-
