@@ -46,8 +46,8 @@ class CarModel(models.Model):
 
 class UserCar(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE)
-    car_model = models.CharField(max_length=50)
+    car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE)
+    # car_model = models.CharField(max_length=50)
     car_year = models.IntegerField()
     fuel_type = models.CharField(max_length=50)
     odometer_value = models.IntegerField()
