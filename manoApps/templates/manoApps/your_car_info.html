@@ -39,9 +39,11 @@
                 <a class="btn btn-danger btn-sm m-1" href="{% url 'delete_car' user_car.id %}"
                    onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
               </div>
+            {% if forloop.last %}
               <div class="d-inline-block">
                 <a class="btn btn-success btn-sm m-1" href="{% url 'add_mileage' user_car.id %}">Update mileage</a>
               </div>
+            {% endif %}
             </td>
         </tr>
 

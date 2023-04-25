@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="container">
   <h2>Add a car</h2>
   <form method="post">
@@ -9,7 +10,7 @@
       <tbody>
         {% for field in form %}
         <tr>
-          <td class="text-right"><label for="{{ field.auto_id }}">{{ field.label }}</label></td>
+          <td class="text-right"><label>{{ field.label }}</label></td>
           <td>{{ field }}</td>
         </tr>
         {% endfor %}
@@ -28,4 +29,5 @@
   <p>
     <a href="{% url 'Index' %}">Back to Home</a>
   </p>
+
 {% endblock %}

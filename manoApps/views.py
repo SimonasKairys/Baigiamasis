@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import UserCar, GasStation
+from .models import UserCar, GasStation, GasStationName
 from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm
 from datetime import date
 
@@ -68,8 +68,16 @@ def add_car(request):
             )
             user_car.save()
 
+            gas_station_name = form.cleaned_data['gas_station_name']
+
+            if not isinstance(gas_station_name, GasStationName):
+                new_gas_station_name = GasStationName(name=gas_station_name)
+                new_gas_station_name.save()
+            else:
+                new_gas_station_name = gas_station_name
+
             gas_station = GasStation(
-                name=form.cleaned_data['gas_station_name'],
+                name=new_gas_station_name.name,
                 location=form.cleaned_data['gas_station_location'],
                 date=form.cleaned_data['date'],
                 price=form.cleaned_data['price'],
@@ -123,7 +131,7 @@ def add_mileage(request, user_car_id):
     original_user_car = get_object_or_404(UserCar, id=user_car_id)
     initial_data = {'date': date.today()}
     if request.method == 'POST':
-        form = AddMileageForm(request.POST)
+        form = AddMileageForm(request.POST, user=request.user, user_car_id=user_car_id)
         if form.is_valid():
             new_user_car = UserCar(
                 user=request.user,
@@ -146,7 +154,6 @@ def add_mileage(request, user_car_id):
 
             return redirect('your_car_info')
     else:
-        form = AddMileageForm(initial=initial_data)
+        form = AddMileageForm(initial=initial_data, user=request.user, user_car_id=user_car_id)
 
     return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': original_user_car})
-

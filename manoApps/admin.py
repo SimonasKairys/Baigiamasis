@@ -1,16 +1,10 @@
 from django.contrib import admin
-from .models import Asmenys, Car, CarModel, UserCar, GasStation
+from .models import Car, CarModel, UserCar, GasStationName
 
 
 # @admin.action(description='make public')
 # def make_published(queryset):
 #     queryset.update(genre='Adventure')
-
-
-class AsmenysAdmin(admin.ModelAdmin):
-    list_display = ['user_name', 'user_surname', 'user_birth_date', 'user_age']
-    # ordering = ['user_name']
-    # actions = [make_published]
 
 
 class CarAdmin(admin.ModelAdmin):
@@ -25,12 +19,11 @@ class UserCarAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank')
 
 
-class GasStationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'location', 'user_car', 'date', 'price')
+class GasStationNameAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
 
 
 admin.site.register(Car, CarAdmin)
 admin.site.register(CarModel, CarModelAdmin)
 admin.site.register(UserCar, UserCarAdmin)
-admin.site.register(GasStation, GasStationAdmin)
-admin.site.register(Asmenys, AsmenysAdmin)
+admin.site.register(GasStationName, GasStationNameAdmin)

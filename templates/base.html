@@ -44,8 +44,10 @@
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
+                    {% if not user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">User login</a>
+                    {% endif %}
                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'add_car' %}">Add car</a>
