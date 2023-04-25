@@ -11,16 +11,24 @@ class GasStationNameSelectWidget(forms.Select):
         return option
 
 
+class UserCarForm(forms.ModelForm):
+    driven_distance = forms.IntegerField(required=False, initial=0)
+
+    class Meta:
+        model = UserCar
+        fields = ('car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank', 'driven_distance')
+
+
 class AddCarForm(forms.Form):
     car = forms.ModelChoiceField(queryset=Car.objects.all())
     car_model = forms.ModelChoiceField(queryset=CarModel.objects.none())
     car_year = forms.IntegerField()
     fuel_type = forms.ChoiceField(choices=[('gasoline', 'Gasoline'), ('diesel', 'Diesel')])
     odometer_value = forms.IntegerField()
+    driven_distance = forms.IntegerField()
     fuel_in_tank = forms.FloatField()
     gas_station_name = forms.ModelChoiceField(
-        queryset=GasStationName.objects.all(), required=True, label='Gas Station Name',
-        widget=GasStationNameSelectWidget(attrs={'data-allow-custom': 'true'}))
+        queryset=GasStationName.objects.all(), required=True, label='Gas Station Name')
     gas_station_location = forms.CharField(required=True, label='Gas Station Location')
     date = forms.DateField()
     price = forms.DecimalField(max_digits=5, decimal_places=3)
@@ -76,7 +84,8 @@ class AddMileageForm(forms.Form):
 
     odometer_value = forms.IntegerField(label='Odometer Value')
     fuel_in_tank = forms.IntegerField(label='Fuel in Tank')
-    gas_station_name = forms.CharField(label='Gas Station Name', max_length=100)
+    gas_station_name = forms.ModelChoiceField(
+        queryset=GasStationName.objects.all(), required=True, label='Gas Station Name')
     gas_station_location = forms.CharField(label='Gas Station Location', max_length=100)
     date = forms.DateField()
     price = forms.DecimalField(label='Price EUR', max_digits=5, decimal_places=3)

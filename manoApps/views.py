@@ -64,7 +64,8 @@ def add_car(request):
                 car_year=form.cleaned_data['car_year'],
                 fuel_type=form.cleaned_data['fuel_type'],
                 odometer_value=form.cleaned_data['odometer_value'],
-                fuel_in_tank=form.cleaned_data['fuel_in_tank']
+                fuel_in_tank=form.cleaned_data['fuel_in_tank'],
+                driven_distance=form.cleaned_data['driven_distance']
             )
             user_car.save()
 
@@ -133,13 +134,17 @@ def add_mileage(request, user_car_id):
     if request.method == 'POST':
         form = AddMileageForm(request.POST, user=request.user, user_car_id=user_car_id)
         if form.is_valid():
+            new_odometer_value = form.cleaned_data['odometer_value']
+            driven_distance = new_odometer_value - original_user_car.odometer_value
+
             new_user_car = UserCar(
                 user=request.user,
                 car_model=original_user_car.car_model,
                 car_year=original_user_car.car_year,
                 fuel_type=original_user_car.fuel_type,
                 odometer_value=form.cleaned_data['odometer_value'],
-                fuel_in_tank=form.cleaned_data['fuel_in_tank']
+                fuel_in_tank=form.cleaned_data['fuel_in_tank'],
+                driven_distance=driven_distance
             )
             new_user_car.save()
 

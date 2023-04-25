@@ -11,6 +11,7 @@
         <th class="text-nowrap text-center">Car Year</th>
         <th class="text-nowrap text-center">Fuel Type</th>
         <th class="text-nowrap text-center">Odometer Value</th>
+        <th class="text-nowrap text-center">Driven distance</th>
         <th class="text-nowrap text-center">Fuel in Tank</th>
         <th class="text-nowrap text-center">Gas Station Name</th>
         <th class="text-nowrap text-center">Gas Station Location</th>
@@ -26,6 +27,7 @@
           <td class="text-nowrap text-center">{{ user_car.car_year }}</td>
           <td class="text-nowrap text-center">{{ user_car.fuel_type }}</td>
           <td class="text-nowrap text-center">{{ user_car.odometer_value }}</td>
+          <td class="text-nowrap text-center">{{ user_car.driven_distance }}</td>
           <td class="text-nowrap text-center">{{ user_car.fuel_in_tank }}</td>
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.name }}</td>
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.location }}</td>

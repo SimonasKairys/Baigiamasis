@@ -25,6 +25,7 @@ class UserCar(models.Model):
     car_year = models.IntegerField()
     fuel_type = models.CharField(max_length=50)
     odometer_value = models.IntegerField()
+    driven_distance = models.IntegerField(default=0)
     fuel_in_tank = models.FloatField()
 
 
