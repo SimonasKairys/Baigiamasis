@@ -87,7 +87,6 @@ def add_car(request):
             gas_station.save()
 
             return redirect('your_car_info')
-
     return render(request, 'manoApps/add_car.html', {'form': form})
 
 
@@ -120,10 +119,8 @@ def edit_car(request, car_id):
 def delete_car(request, car_id):
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
     gas_station = get_object_or_404(GasStation, user_car=user_car)
-
     gas_station.delete()
     user_car.delete()
-
     return redirect('your_car_info')
 
 
@@ -156,9 +153,7 @@ def add_mileage(request, user_car_id):
                 price=form.cleaned_data['price']
             )
             gas_station.save()
-
             return redirect('your_car_info')
     else:
         form = AddMileageForm(initial=initial_data, user=request.user, user_car_id=user_car_id)
-
     return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': original_user_car})

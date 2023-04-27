@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 
 
 class Car(models.Model):
-
     make = models.CharField(max_length=100)
 
     def __str__(self):
@@ -11,7 +10,6 @@ class Car(models.Model):
 
 
 class CarModel(models.Model):
-
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     model = models.CharField(max_length=100)
 
