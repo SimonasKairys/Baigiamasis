@@ -48,13 +48,12 @@ class AddCarForm(forms.Form):
 class EditCarForm(forms.ModelForm):
     class Meta:
         model = UserCar
-        fields = [
-            'car_model',
-            'car_year',
-            'fuel_type',
-            'odometer_value',
-            'fuel_in_tank',
-        ]
+        fields = ['car_model',
+                  'car_year',
+                  'fuel_type',
+                  'odometer_value',
+                  'fuel_in_tank'
+                  ]
 
 
 class EditGasStationForm(forms.ModelForm):

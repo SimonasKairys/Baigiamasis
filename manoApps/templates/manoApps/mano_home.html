@@ -1,11 +1,30 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {% block content %}
-<body>
 
-<h1>Welcome {{ user.username }}</h1>
-<br>
-<p> q-_-p </p>
+  <h2>{{ user.username }} Car Information</h2>
 
+  <table border="1" class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Car</th>
+        <th>Model</th>
+        <th>Total Driven Distance</th>
+        <th>Total Fuel</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for car_data in unique_cars_data %}
+        <tr>
+          <td>{{ car_data.car }}</td>
+          <td>{{ car_data.model }}</td>
+          <td>{{ car_data.total_driven_distance|floatformat:3 }}</td>
+          <td>{{ car_data.total_fuel|floatformat:3 }}</td>
+          <td>{{ car_data.total_price|floatformat:3 }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-</body>
 {% endblock %}
