@@ -12,6 +12,8 @@
         <th>Total Driven Distance</th>
         <th>Total Fuel</th>
         <th>Total Price</th>
+        <th>Average Fuel Consumption</th>
+
       </tr>
     </thead>
     <tbody>
@@ -22,6 +24,8 @@
           <td>{{ car_data.total_driven_distance|floatformat:3 }}</td>
           <td>{{ car_data.total_fuel|floatformat:3 }}</td>
           <td>{{ car_data.total_price|floatformat:3 }}</td>
+          <td>{{ car_data.average_fuel_consumption|floatformat:3 }}</td>
+
         </tr>
       {% endfor %}
     </tbody>
