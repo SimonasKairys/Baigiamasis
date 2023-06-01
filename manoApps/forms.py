@@ -1,6 +1,8 @@
 from django import forms
-from .models import Car, CarModel, UserCar, GasStation, GasStationName
+from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+
 
 
 class GasStationNameSelectWidget(forms.Select):
@@ -112,3 +114,13 @@ class AddMileageForm(forms.Form):
         if user_car and odometer_value is not None and odometer_value <= user_car.odometer_value:
             self.add_error('odometer_value',
                            ValidationError('Odometer value must be greater than the last saved value.'))
+
+
+class CarServiceEventForm(forms.ModelForm):
+
+    class Meta:
+        model = CarServiceEvent
+        fields = ['name', 'date', 'description', 'price']
+
+
+

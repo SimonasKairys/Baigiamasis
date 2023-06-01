@@ -4,13 +4,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import UserCar, GasStation, GasStationName
-from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm
+from .models import UserCar, GasStation, GasStationName, CarServiceEvent, CarModel
+from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm, CarServiceEventForm
 from datetime import date
 from django.db import models
-
-
-from django.db.models import Count, Sum, F
+from django.db.models import Sum, F
 
 
 def home_page(request):
@@ -23,7 +21,9 @@ def home_page(request):
     # Aggregate data for unique cars
     unique_cars_data = []
     for user_car in user_cars:
-        if not any(car_data['car'] == user_car.car_model.car and car_data['model'] == user_car.car_model.model for car_data in unique_cars_data):
+        if not any(
+                car_data['car'] == user_car.car_model.car and car_data['model'] == user_car.car_model.model for car_data
+                in unique_cars_data):
             aggregated_data = user_car.gasstation_set.aggregate(
                 total_driven_distance=Sum('user_car__driven_distance'),
                 total_fuel=Sum('user_car__fuel_in_tank'),
@@ -54,8 +54,10 @@ def home_page(request):
                     car_data['total_driven_distance'] += aggregated_data['total_driven_distance']
                     car_data['total_fuel'] += aggregated_data['total_fuel']
                     car_data['total_price'] += aggregated_data['total_price']
-                    car_data['average_driven_distance'] = car_data['total_driven_distance'] / gas_station_count if gas_station_count > 0 else 0
-                    car_data['average_fuel_consumption'] = car_data['total_driven_distance'] / car_data['total_fuel'] if car_data['total_fuel'] > 0 else 0
+                    car_data['average_driven_distance'] = car_data['total_driven_distance'] / \
+                                                          gas_station_count if gas_station_count > 0 else 0
+                    car_data['average_fuel_consumption'] = car_data['total_driven_distance'] / \
+                                                            car_data['total_fuel'] if car_data['total_fuel'] > 0 else 0
 
     context = {
         'user': request.user,
@@ -87,7 +89,7 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('logged_home')
+                return redirect('Index')
     else:
         form = AuthenticationForm()
     return render(request, 'manoApps/mano_login.html', {'form': form})
@@ -231,3 +233,25 @@ def add_mileage(request, user_car_id):
     else:
         form = AddMileageForm(initial=initial_data, user=request.user, user_car_id=user_car_id)
     return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': original_user_car})
+
+
+@login_required
+def mano_service(request):
+    services = CarServiceEvent.objects.filter(user=request.user)
+    return render(request, 'manoApps/mano_service.html', {'services': services})
+
+
+@login_required
+def service_new(request):
+    if request.method == "POST":
+        form = CarServiceEventForm(request.POST)
+        if form.is_valid():
+            service = form.save(commit=False)
+            service.user = request.user
+            # get the car associated with the user that has the highest ID
+            service.car = CarModel.objects.filter(usercar__user=request.user).latest('id')
+            service.save()
+            return redirect('mano_service')
+    else:
+        form = CarServiceEventForm()
+    return render(request, 'manoApps/service_new.html', {'form': form})

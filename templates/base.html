@@ -3,7 +3,7 @@
 {% load i18n %}
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -54,6 +54,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'your_car_info' %}">Car info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'mano_service' %}">Service</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
