@@ -247,7 +247,7 @@ def service_new(request):
     user_cars = CarModel.objects.filter(usercar__user=request.user).values_list('id', flat=True).distinct()
     if user_cars.count() == 0:
         messages.error(request, "You don't have any cars registered!")
-        return redirect('some_view_to_handle_this')  # replace this with a real view
+        return redirect('add_car')
 
     if request.method == "POST":
         form = CarServiceEventForm(request.user, request.POST)
