@@ -117,10 +117,18 @@ class AddMileageForm(forms.Form):
 
 
 class CarServiceEventForm(forms.ModelForm):
-
     class Meta:
         model = CarServiceEvent
-        fields = ['name', 'date', 'description', 'price']
+        fields = ['car', 'name', 'date', 'description', 'price']
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['car'].queryset = self.get_user_cars(user)
+
+    def get_user_cars(self, user):
+        car_ids = CarModel.objects.filter(usercar__user=user).values_list('id', flat=True).distinct()
+        return CarModel.objects.filter(id__in=car_ids)
+
 
 
 

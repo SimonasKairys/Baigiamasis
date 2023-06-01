@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
@@ -243,15 +244,22 @@ def mano_service(request):
 
 @login_required
 def service_new(request):
+    user_cars = CarModel.objects.filter(usercar__user=request.user).values_list('id', flat=True).distinct()
+    if user_cars.count() == 0:
+        messages.error(request, "You don't have any cars registered!")
+        return redirect('some_view_to_handle_this')  # replace this with a real view
+
     if request.method == "POST":
-        form = CarServiceEventForm(request.POST)
+        form = CarServiceEventForm(request.user, request.POST)
         if form.is_valid():
             service = form.save(commit=False)
             service.user = request.user
-            # get the car associated with the user that has the highest ID
-            service.car = CarModel.objects.filter(usercar__user=request.user).latest('id')
             service.save()
             return redirect('mano_service')
     else:
-        form = CarServiceEventForm()
+        if user_cars.count() > 1:
+            form = CarServiceEventForm(request.user)
+        elif user_cars.count() == 1:
+            form = CarServiceEventForm(request.user, initial={'car': user_cars.first()})
+
     return render(request, 'manoApps/service_new.html', {'form': form})
