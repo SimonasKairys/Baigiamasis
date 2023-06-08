@@ -281,3 +281,11 @@ def service_delete(request, service_id):
     service = get_object_or_404(CarServiceEvent, id=service_id)
     service.delete()
     return redirect('mano_service')
+
+
+def apie(request):
+    return render(request, 'manoApps/apie.html')
+
+
+def kontaktai(request):
+    return render(request, 'manoApps/kontaktai.html')

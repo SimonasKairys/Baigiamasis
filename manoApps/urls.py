@@ -16,5 +16,7 @@ urlpatterns = [
     path('service_new/', views.service_new, name='service_new'),
     path('service_edit/<int:service_id>/', views.service_edit, name='service_edit'),
     path('service_delete/<int:service_id>/', views.service_delete, name='service_delete'),
+    path('Apie/', views.apie, name='apie'),
+    path('Kontaktai/', views.kontaktai, name='kontaktai'),
 
 ]
