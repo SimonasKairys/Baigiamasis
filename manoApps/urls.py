@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -14,5 +14,7 @@ urlpatterns = [
     path('add_mileage/<int:user_car_id>/', views.add_mileage, name='add_mileage'),
     path('mano_service/', views.mano_service, name='mano_service'),
     path('service_new/', views.service_new, name='service_new'),
+    path('service_edit/<int:service_id>/', views.service_edit, name='service_edit'),
+    path('service_delete/<int:service_id>/', views.service_delete, name='service_delete'),
 
 ]

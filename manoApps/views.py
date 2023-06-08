@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login, logout
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
@@ -246,7 +245,6 @@ def mano_service(request):
 def service_new(request):
     user_cars = CarModel.objects.filter(usercar__user=request.user).values_list('id', flat=True).distinct()
     if user_cars.count() == 0:
-        messages.error(request, "You don't have any cars registered!")
         return redirect('add_car')
 
     if request.method == "POST":
@@ -263,3 +261,23 @@ def service_new(request):
             form = CarServiceEventForm(request.user, initial={'car': user_cars.first()})
 
     return render(request, 'manoApps/service_new.html', {'form': form})
+
+
+@login_required
+def service_edit(request, service_id):
+    service = get_object_or_404(CarServiceEvent, id=service_id)
+    if request.method == 'POST':
+        form = CarServiceEventForm(request.user, request.POST, instance=service)
+        if form.is_valid():
+            form.save()
+            return redirect('mano_service')
+    else:
+        form = CarServiceEventForm(request.user, instance=service)
+    return render(request, 'manoApps/service_edit.html', {'form': form})
+
+
+@login_required
+def service_delete(request, service_id):
+    service = get_object_or_404(CarServiceEvent, id=service_id)
+    service.delete()
+    return redirect('mano_service')

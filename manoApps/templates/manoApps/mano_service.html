@@ -9,6 +9,7 @@
       <th>Date</th>
       <th>Description</th>
       <th>Price</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +19,14 @@
         <td>{{ service.date }}</td>
         <td>{{ service.description }}</td>
         <td>{{ service.price }}</td>
+        <td>
+          <div class="d-inline-block">
+            <a class="btn btn-primary btn-sm" href="{% url 'service_edit' service.id %}">Edit</a>
+          </div>
+          <div class="d-inline-block">
+          <a class="btn btn-danger btn-sm" href="{% url 'service_delete' service.id %}">Delete</a>
+          </div>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
