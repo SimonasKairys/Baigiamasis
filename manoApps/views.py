@@ -56,8 +56,8 @@ def home_page(request):
                     car_data['total_price'] += aggregated_data['total_price']
                     car_data['average_driven_distance'] = car_data['total_driven_distance'] / \
                                                           gas_station_count if gas_station_count > 0 else 0
-                    car_data['average_fuel_consumption'] = car_data['total_driven_distance'] / \
-                                                            car_data['total_fuel'] if car_data['total_fuel'] > 0 else 0
+                    car_data['average_fuel_consumption'] = (car_data['total_fuel'] /
+                                                            car_data['total_driven_distance']) * 100 if car_data['total_fuel'] > 0 else 0
 
     context = {
         'user': request.user,
