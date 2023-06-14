@@ -2,13 +2,13 @@
 
 {% block content %}
   <h2>{{ user.username }} Car Information</h2>
-
+  <br />
   {% for user_car in user_cars %}
+    <h3>{{ user_car.car_model.car }} - {{ user_car.car_model.model }}</h3>
+
     <table border="1" class="table table-striped table-sm center-table">
       <thead>
         <tr>
-          <th class="text-nowrap text-center">Car</th>
-          <th class="text-nowrap text-center">Car Model</th>
           <th class="text-nowrap text-center">Car Year</th>
           <th class="text-nowrap text-center">Fuel Type</th>
           <th class="text-nowrap text-center">Odometer Value</th>
@@ -22,31 +22,31 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="text-nowrap text-center">{{ user_car.car_model.car }}</td>
-          <td class="text-nowrap text-center">{{ user_car.car_model.model }}</td>
-          <td class="text-nowrap text-center">{{ user_car.car_year }}</td>
-          <td class="text-nowrap text-center">{{ user_car.fuel_type }}</td>
-          <td class="text-nowrap text-center">{{ user_car.odometer_value }}</td>
-          <td class="text-nowrap text-center">{{ user_car.driven_distance }}</td>
-          <td class="text-nowrap text-center">{{ user_car.fuel_in_tank }}</td>
-          <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.name }}</td>
-          <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.location }}</td>
-          <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.date }}</td>
-          <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.price }}</td>
-          <td class="text-nowrap text-center">
-            <div class="d-inline-block">
-              <a class="btn btn-primary btn-sm m-1" href="{% url 'edit_car' user_car.id %}">Edit</a>
-            </div>
-            <div class="d-inline-block">
-              <a class="btn btn-danger btn-sm m-1" href="{% url 'delete_car' user_car.id %}"
-                 onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
-            </div>
-            <div class="d-inline-block">
-              <a class="btn btn-success btn-sm m-1" href="{% url 'add_mileage' user_car.id %}">Update mileage</a>
-            </div>
-          </td>
-        </tr>
+        {% for gas_station in user_car.gasstation_set.all %}
+          <tr>
+            <td class="text-nowrap text-center">{{ user_car.car_year }}</td>
+            <td class="text-nowrap text-center">{{ user_car.fuel_type }}</td>
+            <td class="text-nowrap text-center">{{ user_car.odometer_value }}</td>
+            <td class="text-nowrap text-center">{{ user_car.driven_distance }}</td>
+            <td class="text-nowrap text-center">{{ user_car.fuel_in_tank }}</td>
+            <td class="text-nowrap text-center">{{ gas_station.name }}</td>
+            <td class="text-nowrap text-center">{{ gas_station.location }}</td>
+            <td class="text-nowrap text-center">{{ gas_station.date }}</td>
+            <td class="text-nowrap text-center">{{ gas_station.price }}</td>
+            <td class="text-nowrap text-center">
+              <div class="d-inline-block">
+                <a class="btn btn-primary btn-sm m-1" href="{% url 'edit_car' user_car.id %}">Edit</a>
+              </div>
+              <div class="d-inline-block">
+                <a class="btn btn-danger btn-sm m-1" href="{% url 'delete_car' user_car.id %}"
+                   onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
+              </div>
+              <div class="d-inline-block">
+                <a class="btn btn-success btn-sm m-1" href="{% url 'add_mileage' user_car.id %}">Update mileage</a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
   {% empty %}
