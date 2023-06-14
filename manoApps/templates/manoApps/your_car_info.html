@@ -3,24 +3,25 @@
 {% block content %}
   <h2>{{ user.username }} Car Information</h2>
 
-  <table border="1" class="table table-striped table-sm">
-    <thead>
-      <tr>
-        <th class="text-nowrap text-center">Car</th>
-        <th class="text-nowrap text-center">Car Model</th>
-        <th class="text-nowrap text-center">Car Year</th>
-        <th class="text-nowrap text-center">Fuel Type</th>
-        <th class="text-nowrap text-center">Odometer Value</th>
-        <th class="text-nowrap text-center">Driven distance</th>
-        <th class="text-nowrap text-center">Fuel in Tank</th>
-        <th class="text-nowrap text-center">Gas Station Name</th>
-        <th class="text-nowrap text-center">Gas Station Location</th>
-        <th class="text-nowrap text-center">Date</th>
-        <th class="text-nowrap text-center">Price EUR</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user_car in user_cars %}
+  {% for user_car in user_cars %}
+    <table border="1" class="table table-striped table-sm center-table">
+      <thead>
+        <tr>
+          <th class="text-nowrap text-center">Car</th>
+          <th class="text-nowrap text-center">Car Model</th>
+          <th class="text-nowrap text-center">Car Year</th>
+          <th class="text-nowrap text-center">Fuel Type</th>
+          <th class="text-nowrap text-center">Odometer Value</th>
+          <th class="text-nowrap text-center">Driven distance</th>
+          <th class="text-nowrap text-center">Fuel in Tank</th>
+          <th class="text-nowrap text-center">Gas Station Name</th>
+          <th class="text-nowrap text-center">Gas Station Location</th>
+          <th class="text-nowrap text-center">Date</th>
+          <th class="text-nowrap text-center">Price EUR</th>
+          <th class="text-nowrap text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
         <tr>
           <td class="text-nowrap text-center">{{ user_car.car_model.car }}</td>
           <td class="text-nowrap text-center">{{ user_car.car_model.model }}</td>
@@ -33,25 +34,24 @@
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.location }}</td>
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.date }}</td>
           <td class="text-nowrap text-center">{{ user_car.gasstation_set.first.price }}</td>
-          <td colspan="10" class="text-nowrap text-center">
-              <div class="d-inline-block">
-                <a class="btn btn-primary btn-sm m-1" href="{% url 'edit_car' user_car.id %}">Edit</a>
-              </div>
-              <div class="d-inline-block">
-                <a class="btn btn-danger btn-sm m-1" href="{% url 'delete_car' user_car.id %}"
-                   onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
-              </div>
-            {% if forloop.last %}
-              <div class="d-inline-block">
-                <a class="btn btn-success btn-sm m-1" href="{% url 'add_mileage' user_car.id %}">Update mileage</a>
-              </div>
-            {% endif %}
-            </td>
+          <td class="text-nowrap text-center">
+            <div class="d-inline-block">
+              <a class="btn btn-primary btn-sm m-1" href="{% url 'edit_car' user_car.id %}">Edit</a>
+            </div>
+            <div class="d-inline-block">
+              <a class="btn btn-danger btn-sm m-1" href="{% url 'delete_car' user_car.id %}"
+                 onclick="return confirm('Are you sure you want to delete this car?')">Delete</a>
+            </div>
+            <div class="d-inline-block">
+              <a class="btn btn-success btn-sm m-1" href="{% url 'add_mileage' user_car.id %}">Update mileage</a>
+            </div>
+          </td>
         </tr>
-
-      {% endfor %}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  {% empty %}
+    <p>No cars found.</p>
+  {% endfor %}
   <p>
     <a href="{% url 'Index' %}">Back to Home</a>
   </p>
