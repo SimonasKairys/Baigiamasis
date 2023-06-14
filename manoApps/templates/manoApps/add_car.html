@@ -11,7 +11,12 @@
         {% for field in form %}
         <tr>
           <td class="text-right"><label>{{ field.label }}</label></td>
-          <td>{{ field }}</td>
+          <td>
+            {{ field }}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -26,8 +31,9 @@
     }
   </script>
 </div>
-  <p>
-    <a href="{% url 'Index' %}">Back to Home</a>
-  </p>
+
+<p>
+  <a href="{% url 'Index' %}">Back to Home</a>
+</p>
 
 {% endblock %}

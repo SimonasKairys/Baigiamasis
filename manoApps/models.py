@@ -25,6 +25,11 @@ class UserCar(models.Model):
     odometer_value = models.IntegerField()
     driven_distance = models.IntegerField(default=0)
     fuel_in_tank = models.FloatField()
+    VIN = models.CharField(max_length=20, unique=True, default=0)
+    car_plate = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.car_model.model
 
 
 class GasStationName(models.Model):

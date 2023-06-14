@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 
-
 class GasStationNameSelectWidget(forms.Select):
     def create_option(self, *args, **kwargs):
         option = super().create_option(*args, **kwargs)
@@ -18,13 +17,16 @@ class UserCarForm(forms.ModelForm):
 
     class Meta:
         model = UserCar
-        fields = ('car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank', 'driven_distance')
+        fields = ('car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank', 'driven_distance',
+                  'VIN', 'car_plate')
 
 
 class AddCarForm(forms.Form):
     car = forms.ModelChoiceField(queryset=Car.objects.all())
     car_model = forms.ModelChoiceField(queryset=CarModel.objects.none())
     car_year = forms.IntegerField()
+    VIN = forms.CharField(max_length=20)
+    car_plate = forms.CharField(max_length=10)
     fuel_type = forms.ChoiceField(choices=[('gasoline', 'Gasoline'), ('diesel', 'Diesel')])
     odometer_value = forms.IntegerField()
     driven_distance = forms.IntegerField()
@@ -46,10 +48,19 @@ class AddCarForm(forms.Form):
         elif self.initial.get('car') is not None:
             self.fields['car_model'].queryset = CarModel.objects.filter(car=self.initial.get('car'))
 
+    def clean_VIN(self):
+        VIN = self.cleaned_data.get('VIN')
+        if UserCar.objects.filter(VIN=VIN).exists():
+            user = UserCar.objects.get(VIN=VIN).user.username
+            raise ValidationError(f"This VIN is already used by {user}")
+        return VIN
+
 
 class EditCarForm(forms.ModelForm):
     class Meta:
         model = UserCar
+        VIN = forms.CharField(max_length=20)
+        car_plate = forms.CharField(max_length=10)
         fields = ['car_model',
                   'car_year',
                   'fuel_type',

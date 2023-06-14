@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -8,7 +9,9 @@ from .models import UserCar, GasStation, GasStationName, CarServiceEvent, CarMod
 from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm, CarServiceEventForm
 from datetime import date
 from django.db import models
+from django.http import HttpResponse
 from django.db.models import Sum, F
+from django.contrib import messages
 
 
 def home_page(request):
@@ -123,7 +126,9 @@ def add_car(request):
                 fuel_type=form.cleaned_data['fuel_type'],
                 odometer_value=form.cleaned_data['odometer_value'],
                 fuel_in_tank=form.cleaned_data['fuel_in_tank'],
-                driven_distance=form.cleaned_data['driven_distance']
+                driven_distance=form.cleaned_data['driven_distance'],
+                VIN=form.cleaned_data['VIN'],
+                car_plate=form.cleaned_data['car_plate'],
             )
             user_car.save()
 
@@ -143,11 +148,15 @@ def add_car(request):
                 user_car=user_car
             )
             gas_station.save()
-
             return redirect('your_car_info')
+        else:
+            messages.error(request, form.errors)
+    else:
+        form = AddCarForm()
     return render(request, 'manoApps/add_car.html', {'form': form})
 
 
+@login_required
 def your_car_info(request):
     user_cars = UserCar.objects.filter(user=request.user)
     return render(request, 'manoApps/your_car_info.html', {'user_cars': user_cars})
