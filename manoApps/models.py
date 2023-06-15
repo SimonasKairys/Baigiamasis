@@ -26,7 +26,7 @@ class UserCar(models.Model):
     driven_distance = models.IntegerField(default=0)
     fuel_in_tank = models.FloatField()
     VIN = models.CharField(max_length=20, unique=True, default=0)
-    car_plate = models.CharField(max_length=10)
+    car_plate = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.car_model.model

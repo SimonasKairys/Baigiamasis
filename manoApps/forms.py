@@ -1,7 +1,6 @@
 from django import forms
 from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
 
 
 class GasStationNameSelectWidget(forms.Select):
@@ -54,6 +53,13 @@ class AddCarForm(forms.Form):
             user = UserCar.objects.get(VIN=VIN).user.username
             raise ValidationError(f"This VIN is already used by {user}")
         return VIN
+
+    def clean_car_plate(self):
+        car_plate = self.cleaned_data.get('car_plate')
+        if UserCar.objects.filter(car_plate=car_plate).exists():
+            user = UserCar.objects.get(car_plate=car_plate).user.username
+            raise ValidationError(f"This car_plate is already used by {user}")
+        return car_plate
 
 
 class EditCarForm(forms.ModelForm):

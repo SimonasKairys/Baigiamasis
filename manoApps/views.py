@@ -238,7 +238,6 @@ def add_mileage(request, user_car_id):
     return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': user_car})
 
 
-
 @login_required
 def mano_service(request):
     services = CarServiceEvent.objects.filter(user=request.user)
