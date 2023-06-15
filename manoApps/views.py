@@ -27,23 +27,28 @@ def home_page(request):
         if not any(
                 car_data['car'] == user_car.car_model.car and car_data['model'] == user_car.car_model.model for car_data
                 in unique_cars_data):
-            aggregated_data = user_car.gasstation_set.aggregate(
-                total_driven_distance=Sum('user_car__driven_distance'),
-                total_fuel=Sum('user_car__fuel_in_tank'),
-                total_price=Sum(F('user_car__fuel_in_tank') * F('price'), output_field=models.FloatField())
-            )
-            gas_station_count = user_car.gasstation_set.count()
-            aggregated_data.update({
-                'car_id': user_car.id,
-                'car': user_car.car_model.car,
-                'model': user_car.car_model.model,
-                'latest_date': user_car.gasstation_set.latest('date').date,
-                'average_driven_distance': aggregated_data['total_driven_distance'] /
-                                           gas_station_count if gas_station_count > 0 else 0,
-                'average_fuel_consumption': aggregated_data['total_driven_distance'] /
-                                            aggregated_data['total_fuel'] if aggregated_data['total_fuel'] > 0 else 0,
-            })
-            unique_cars_data.append(aggregated_data)
+            gas_stations = user_car.gasstation_set.all()
+            if gas_stations:
+                aggregated_data = gas_stations.aggregate(
+                    total_driven_distance=Sum('user_car__driven_distance'),
+                    total_fuel=Sum('user_car__fuel_in_tank'),
+                    total_price=Sum(F('user_car__fuel_in_tank') * F('price'), output_field=models.FloatField())
+                )
+                gas_station_count = gas_stations.count()
+                latest_date = gas_stations.latest('date').date
+                aggregated_data.update({
+                    'car_id': user_car.id,
+                    'car': user_car.car_model.car,
+                    'model': user_car.car_model.model,
+                    'latest_date': latest_date,
+                    'average_driven_distance': aggregated_data['total_driven_distance'] /
+                                               gas_station_count if gas_station_count > 0 else 0,
+                    'average_fuel_consumption': aggregated_data['total_driven_distance'] /
+                                                aggregated_data['total_fuel'] if aggregated_data[
+                                                                                     'total_fuel'] > 0 else 0,
+                })
+                unique_cars_data.append(aggregated_data)
+
         else:
             for car_data in unique_cars_data:
                 if car_data['car'] == user_car.car_model.car and car_data['model'] == user_car.car_model.model:
@@ -165,7 +170,7 @@ def your_car_info(request):
 @login_required
 def edit_car(request, car_id):
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
-    gas_station = get_object_or_404(GasStation, user_car=user_car)
+    gas_station = GasStation.objects.filter(user_car=user_car).first()
 
     if request.method == 'POST':
         form_car = EditCarForm(request.POST, instance=user_car)
@@ -201,12 +206,25 @@ def edit_car(request, car_id):
 
 
 @login_required
-def delete_car(request, car_id):
+def delete_car(request, car_id, gas_station_id):
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
-    gas_station = get_object_or_404(GasStation, user_car=user_car)
+    gas_station = get_object_or_404(GasStation, id=gas_station_id, user_car=user_car)
+
+    # skaiciuojam kiek yra GasStation
+    initial_count = user_car.gasstation_set.count()
+
+    # trinam pazymeta GasStation
     gas_station.delete()
-    user_car.delete()
+
+    # skaiciuojam GasStation po istrynimo
+    final_count = user_car.gasstation_set.count()
+
+    # jeigu 0 trinam ir UserCar
+    if initial_count == 1 and final_count == 0:
+        user_car.delete()
+
     return redirect('your_car_info')
+
 
 
 @login_required
@@ -280,7 +298,7 @@ def service_edit(request, service_id):
 
 
 @login_required
-def service_delete(request, service_id):
+def service_delete(service_id):
     service = get_object_or_404(CarServiceEvent, id=service_id)
     service.delete()
     return redirect('mano_service')
