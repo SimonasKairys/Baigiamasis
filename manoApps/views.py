@@ -211,27 +211,21 @@ def delete_car(request, car_id):
 
 @login_required
 def add_mileage(request, user_car_id):
-    original_user_car = get_object_or_404(UserCar, id=user_car_id)
+    user_car = get_object_or_404(UserCar, id=user_car_id)
     initial_data = {'date': date.today()}
     if request.method == 'POST':
         form = AddMileageForm(request.POST, user=request.user, user_car_id=user_car_id)
         if form.is_valid():
             new_odometer_value = form.cleaned_data['odometer_value']
-            driven_distance = new_odometer_value - original_user_car.odometer_value
+            driven_distance = new_odometer_value - user_car.odometer_value
 
-            new_user_car = UserCar(
-                user=request.user,
-                car_model=original_user_car.car_model,
-                car_year=original_user_car.car_year,
-                fuel_type=original_user_car.fuel_type,
-                odometer_value=form.cleaned_data['odometer_value'],
-                fuel_in_tank=form.cleaned_data['fuel_in_tank'],
-                driven_distance=driven_distance
-            )
-            new_user_car.save()
+            user_car.odometer_value = new_odometer_value
+            user_car.fuel_in_tank = form.cleaned_data['fuel_in_tank']
+            user_car.driven_distance = driven_distance
+            user_car.save()
 
             gas_station = GasStation(
-                user_car=new_user_car,
+                user_car=user_car,
                 name=form.cleaned_data['gas_station_name'],
                 location=form.cleaned_data['gas_station_location'],
                 date=form.cleaned_data['date'],
@@ -241,7 +235,8 @@ def add_mileage(request, user_car_id):
             return redirect('your_car_info')
     else:
         form = AddMileageForm(initial=initial_data, user=request.user, user_car_id=user_car_id)
-    return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': original_user_car})
+    return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': user_car})
+
 
 
 @login_required
