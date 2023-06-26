@@ -1,16 +1,13 @@
-from collections import defaultdict
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import UserCar, GasStation, GasStationName, CarServiceEvent, CarModel
-from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm, CarServiceEventForm
+from .models import UserCar, GasStation, GasStationName, CarServiceEvent, CarModel, CarMileage
+from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm, CarServiceEventForm, CarMileageForm
 from datetime import date
-from django.db import models
-from django.http import HttpResponse
-from django.db.models import Sum, F
+from django.db.models import Sum, F, FloatField
 from django.contrib import messages
 
 
@@ -19,53 +16,43 @@ def home_page(request):
         return HttpResponseRedirect(reverse('login'))
 
     car_id = request.GET.get('car_id', None)
-    user_cars = UserCar.objects.filter(user=request.user).order_by('-gasstation__date')
+    user_cars = UserCar.objects.filter(user=request.user).distinct()
 
-    # Aggregate data for unique cars
     unique_cars_data = []
     for user_car in user_cars:
-        if not any(
-                car_data['car'] == user_car.car_model.car and car_data['model'] == user_car.car_model.model for car_data
-                in unique_cars_data):
-            gas_stations = user_car.gasstation_set.all()
-            if gas_stations:
-                aggregated_data = gas_stations.aggregate(
-                    total_driven_distance=Sum('user_car__driven_distance'),
-                    total_fuel=Sum('user_car__fuel_in_tank'),
-                    total_price=Sum(F('user_car__fuel_in_tank') * F('price'), output_field=models.FloatField())
-                )
-                gas_station_count = gas_stations.count()
-                latest_date = gas_stations.latest('date').date
-                aggregated_data.update({
-                    'car_id': user_car.id,
-                    'car': user_car.car_model.car,
-                    'model': user_car.car_model.model,
-                    'latest_date': latest_date,
-                    'average_driven_distance': aggregated_data['total_driven_distance'] /
-                                               gas_station_count if gas_station_count > 0 else 0,
-                    'average_fuel_consumption': aggregated_data['total_driven_distance'] /
-                                                aggregated_data['total_fuel'] if aggregated_data[
-                                                                                     'total_fuel'] > 0 else 0,
-                })
-                unique_cars_data.append(aggregated_data)
+        car_mileages = CarMileage.objects.filter(user_car=user_car)
+        if car_mileages:
+            car_data = user_car.car_model
+            car_plate = user_car.car_plate
 
-        else:
-            for car_data in unique_cars_data:
-                if car_data['car'] == user_car.car_model.car and car_data['model'] == user_car.car_model.model:
-                    aggregated_data = user_car.gasstation_set.aggregate(
-                        total_driven_distance=Sum('user_car__driven_distance'),
-                        total_fuel=Sum('user_car__fuel_in_tank'),
-                        total_price=Sum(F('user_car__fuel_in_tank') * F('price'), output_field=models.FloatField())
-                    )
-                    gas_station_count = user_car.gasstation_set.count()
+            aggregated_data = car_mileages.aggregate(
+                total_driven_distance=Sum('driven_distance'),
+                total_fuel=Sum('fuel_in_tank'),
+                total_price=Sum(F('fuel_in_tank') * F('price'), output_field=FloatField())
+            )
 
-                    car_data['total_driven_distance'] += aggregated_data['total_driven_distance']
-                    car_data['total_fuel'] += aggregated_data['total_fuel']
-                    car_data['total_price'] += aggregated_data['total_price']
-                    car_data['average_driven_distance'] = car_data['total_driven_distance'] / \
-                                                          gas_station_count if gas_station_count > 0 else 0
-                    car_data['average_fuel_consumption'] = (car_data['total_fuel'] /
-                                                            car_data['total_driven_distance']) * 100 if car_data['total_fuel'] > 0 else 0
+            car_mileage_count = car_mileages.count()
+            average_fuel_consumption = (aggregated_data['total_fuel'] / aggregated_data['total_driven_distance']) * 100 \
+                if aggregated_data['total_fuel'] and aggregated_data['total_driven_distance'] else 0
+
+            average_fuel_consumption = "{:.3f}".format(average_fuel_consumption)
+
+            car_make = user_car.car_model.car.make
+            car_model = user_car.car_model.model
+            car_plate = user_car.car_plate
+
+            unique_cars_data.append({
+                'user_car_id': user_car.id,
+                'car_make': car_make,
+                'car_model': car_model,
+                'car_data': car_data,
+                'car_plate': car_plate,
+                'car_mileages': car_mileages,
+                'total_driven_distance': aggregated_data['total_driven_distance'],
+                'total_fuel': aggregated_data['total_fuel'],
+                'total_price': aggregated_data['total_price'],
+                'average_fuel_consumption': average_fuel_consumption,
+            })
 
     context = {
         'user': request.user,
@@ -129,9 +116,6 @@ def add_car(request):
                 car_model=form.cleaned_data['car_model'],
                 car_year=form.cleaned_data['car_year'],
                 fuel_type=form.cleaned_data['fuel_type'],
-                odometer_value=form.cleaned_data['odometer_value'],
-                fuel_in_tank=form.cleaned_data['fuel_in_tank'],
-                driven_distance=form.cleaned_data['driven_distance'],
                 VIN=form.cleaned_data['VIN'],
                 car_plate=form.cleaned_data['car_plate'],
             )
@@ -149,16 +133,27 @@ def add_car(request):
                 name=new_gas_station_name.name,
                 location=form.cleaned_data['gas_station_location'],
                 date=form.cleaned_data['date'],
-                price=form.cleaned_data['price'],
                 user_car=user_car
             )
             gas_station.save()
+
+            car_mileage = CarMileage(
+                user_car=user_car,
+                gas_station=gas_station,
+                odometer_value=form.cleaned_data['odometer_value'],
+                fuel_in_tank=form.cleaned_data['fuel_in_tank'],
+                driven_distance=form.cleaned_data['driven_distance'],
+                price=form.cleaned_data['price'],
+            )
+            car_mileage.save()
+
             return redirect('your_car_info')
         else:
             messages.error(request, form.errors)
     else:
         form = AddCarForm()
     return render(request, 'manoApps/add_car.html', {'form': form})
+
 
 
 @login_required
@@ -168,41 +163,47 @@ def your_car_info(request):
 
 
 @login_required
-def edit_car(request, car_id):
+def edit_car(request, car_id, carmileage_id):
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
     gas_station = GasStation.objects.filter(user_car=user_car).first()
+    car_mileage = CarMileage.objects.get(id=carmileage_id)
 
     if request.method == 'POST':
         form_car = EditCarForm(request.POST, instance=user_car)
         form_gas_station = EditGasStationForm(request.POST, instance=gas_station)
 
         if form_car.is_valid() and form_gas_station.is_valid():
-            updated_user_car = form_car.save(commit=False)
-            updated_gas_station = form_gas_station.save(commit=False)
+            form_car.save()
+            form_gas_station.save()
 
-            # gauti ankstesni irasa kurio id mazesnis uz dabartini
-            previous_record = UserCar.objects.filter(user=request.user, id__lt=car_id).order_by('-id').first()
-
-            # jeigu irasas rastas naudoti ji, kt atveju dabartini
-            previous_odometer_value = previous_record.odometer_value if previous_record else user_car.odometer_value
-
-            # skaiciuoti skirtuma
-            updated_driven_distance = updated_user_car.odometer_value - previous_odometer_value
-
-            # nuresetinti pries tai buvusia reiksme ir pakeisti nauja
-            updated_user_car.driven_distance -= user_car.driven_distance
-            updated_user_car.driven_distance += updated_driven_distance
-            updated_user_car.save()
-
-            updated_gas_station.user_car = updated_user_car
-            updated_gas_station.save()
+            car_mileage.driven_distance = form_car.cleaned_data['driven_distance']
+            car_mileage.fuel_in_tank = form_car.cleaned_data['fuel_in_tank']
+            car_mileage.price = form_gas_station.cleaned_data['price']
+            car_mileage.save()
 
             return redirect('your_car_info')
     else:
-        form_car = EditCarForm(instance=user_car)
-        form_gas_station = EditGasStationForm(instance=gas_station, initial={'date': date.today()})
+        initial_car_data = {
+            'driven_distance': car_mileage.driven_distance,
+            'fuel_in_tank': car_mileage.fuel_in_tank
+        }
+        initial_gas_station_data = {
+            'price': car_mileage.price
+        }
 
-    return render(request, 'manoApps/edit_car.html', {'form_car': form_car, 'form_gas_station': form_gas_station})
+        form_car = EditCarForm(instance=user_car, initial=initial_car_data)
+        form_gas_station = EditGasStationForm(instance=gas_station, initial=initial_gas_station_data)
+
+    context = {
+        'form_car': form_car,
+        'form_gas_station': form_gas_station,
+        'carmileage_id': carmileage_id
+    }
+    return render(request, 'manoApps/edit_car.html', context)
+
+
+
+
 
 
 @login_required
@@ -226,34 +227,52 @@ def delete_car(request, car_id, gas_station_id):
     return redirect('your_car_info')
 
 
-
 @login_required
 def add_mileage(request, user_car_id):
-    user_car = get_object_or_404(UserCar, id=user_car_id)
+    original_user_car = get_object_or_404(UserCar, id=user_car_id)
     initial_data = {'date': date.today()}
+
     if request.method == 'POST':
         form = AddMileageForm(request.POST, user=request.user, user_car_id=user_car_id)
+
         if form.is_valid():
             new_odometer_value = form.cleaned_data['odometer_value']
-            driven_distance = new_odometer_value - user_car.odometer_value
+            last_car_mileage = CarMileage.objects.filter(user_car_id=user_car_id).order_by('-id').first()
+            last_odometer_value = last_car_mileage.odometer_value if last_car_mileage else 0
 
-            user_car.odometer_value = new_odometer_value
-            user_car.fuel_in_tank = form.cleaned_data['fuel_in_tank']
-            user_car.driven_distance = driven_distance
-            user_car.save()
+            driven_distance = new_odometer_value - last_odometer_value
+
+            gas_station_name = form.cleaned_data['gas_station_name']
+
+            if not isinstance(gas_station_name, GasStationName):
+                new_gas_station_name = GasStationName(name=gas_station_name)
+                new_gas_station_name.save()
+            else:
+                new_gas_station_name = gas_station_name
 
             gas_station = GasStation(
-                user_car=user_car,
-                name=form.cleaned_data['gas_station_name'],
+                name=new_gas_station_name.name,
                 location=form.cleaned_data['gas_station_location'],
                 date=form.cleaned_data['date'],
-                price=form.cleaned_data['price']
+                user_car=original_user_car,
             )
             gas_station.save()
+
+            car_mileage = CarMileage(
+                user_car=original_user_car,
+                gas_station=gas_station,
+                odometer_value=new_odometer_value,
+                fuel_in_tank=form.cleaned_data['fuel_in_tank'],
+                driven_distance=driven_distance,
+                price=form.cleaned_data['price'],
+            )
+            car_mileage.save()
+
             return redirect('your_car_info')
     else:
         form = AddMileageForm(initial=initial_data, user=request.user, user_car_id=user_car_id)
-    return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': user_car})
+
+    return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': original_user_car})
 
 
 @login_required

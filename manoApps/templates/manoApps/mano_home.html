@@ -2,28 +2,35 @@
 
 {% block content %}
   <br />
-  <h2>{{ user.username }} Car Information</h2>
-  <br />
-  {% for car_data in unique_cars_data %}
-    <h3>{{ car_data.car }} - {{ car_data.model }}</h3>
-    <table border="1" class="table table-striped table-sm">
-      <thead>
-        <tr>
-          <th>Total Driven Distance</th>
-          <th>Total Fuel</th>
-          <th>Total Price</th>
-          <th>Average Fuel Consumption (100 km)</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-            <td>{{ car_data.total_driven_distance|floatformat:3 }}</td>
-            <td>{{ car_data.total_fuel|floatformat:3 }}</td>
-            <td>{{ car_data.total_price|floatformat:3 }}</td>
-            <td>{{ car_data.average_fuel_consumption|floatformat:3 }}</td>
-          </tr>
-      </tbody>
-    </table>
-    <br />
-  {% endfor %}
-{% endblock %}
+<div class="container">
+
+    {% for car_data in unique_cars_data %}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h3 class="text-center">{{ car_data.car_make }} - {{ car_data.car_model }} - {{ car_data.car_plate }}</h3>
+
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <th>Average Fuel Consumption (100 km)</th>
+                        <td>{{ car_data.average_fuel_consumption|floatformat:3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Price</th>
+                        <td>{{ car_data.total_price|floatformat:3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Fuel</th>
+                        <td>{{ car_data.total_fuel|floatformat:3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Driven Distance</th>
+                        <td>{{ car_data.total_driven_distance }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock content %}

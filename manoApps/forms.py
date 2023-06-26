@@ -1,5 +1,5 @@
 from django import forms
-from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent
+from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent, CarMileage
 from django.core.exceptions import ValidationError
 
 
@@ -18,6 +18,12 @@ class UserCarForm(forms.ModelForm):
         model = UserCar
         fields = ('car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank', 'driven_distance',
                   'VIN', 'car_plate')
+
+
+class CarMileageForm(forms.ModelForm):
+    class Meta:
+        model = CarMileage
+        fields = ['odometer_value', 'fuel_in_tank', 'driven_distance', 'price']
 
 
 class AddCarForm(forms.Form):
@@ -65,25 +71,35 @@ class AddCarForm(forms.Form):
 class EditCarForm(forms.ModelForm):
     class Meta:
         model = UserCar
-        VIN = forms.CharField(max_length=20)
-        car_plate = forms.CharField(max_length=10)
-        fields = ['car_model',
-                  'car_year',
-                  'fuel_type',
-                  'odometer_value',
-                  'fuel_in_tank'
-                  ]
+        fields = ['car_model', 'car_year']
+
+    driven_distance = forms.IntegerField()
+    fuel_in_tank = forms.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        carmileage_id = kwargs.pop('carmileage_id', None)
+        super().__init__(*args, **kwargs)
+
+        if carmileage_id:
+            car_mileage = CarMileage.objects.get(id=carmileage_id)
+            self.fields['driven_distance'].initial = car_mileage.driven_distance
+            self.fields['fuel_in_tank'].initial = car_mileage.fuel_in_tank
 
 
 class EditGasStationForm(forms.ModelForm):
     class Meta:
         model = GasStation
-        fields = [
-            'name',
-            'location',
-            'date',
-            'price'
-        ]
+        fields = ['name', 'location', 'date']
+
+    price = forms.DecimalField(max_digits=5, decimal_places=3)
+
+    def __init__(self, *args, **kwargs):
+        carmileage_id = kwargs.pop('carmileage_id', None)
+        super().__init__(*args, **kwargs)
+
+        if carmileage_id:
+            car_mileage = CarMileage.objects.get(id=carmileage_id)
+            self.fields['price'].initial = car_mileage.price
 
 
 class AddMileageForm(forms.Form):
@@ -91,8 +107,9 @@ class AddMileageForm(forms.Form):
         self.user = kwargs.pop('user', None)
         self.user_car_id = kwargs.pop('user_car_id', None)
         super().__init__(*args, **kwargs)
-        last_user_car = UserCar.objects.filter(user=self.user, id=self.user_car_id).last()
-        last_odometer_value = last_user_car.odometer_value if last_user_car else None
+
+        last_car_mileage = CarMileage.objects.filter(user_car_id=self.user_car_id).order_by('-id').first()
+        last_odometer_value = last_car_mileage.odometer_value if last_car_mileage else None
 
         self.fields['last_odometer_value'] = forms.IntegerField(
             label="Last Odometer Value",
@@ -127,10 +144,14 @@ class AddMileageForm(forms.Form):
         if price is not None and price < 0:
             self.add_error('price', ValidationError('Price must be non-negative.'))
 
-        user_car = UserCar.objects.filter(user=self.user, id=self.user_car_id).last()
-        if user_car and odometer_value is not None and odometer_value <= user_car.odometer_value:
+        last_car_mileage = CarMileage.objects.filter(user_car_id=self.user_car_id).order_by('-id').first()
+        last_odometer_value = last_car_mileage.odometer_value if last_car_mileage else 0
+
+        if odometer_value is not None and odometer_value <= last_odometer_value:
             self.add_error('odometer_value',
                            ValidationError('Odometer value must be greater than the last saved value.'))
+
+        return cleaned_data
 
 
 class CarServiceEventForm(forms.ModelForm):
@@ -145,7 +166,6 @@ class CarServiceEventForm(forms.ModelForm):
     def get_user_cars(self, user):
         car_ids = CarModel.objects.filter(usercar__user=user).values_list('id', flat=True).distinct()
         return CarModel.objects.filter(id__in=car_ids)
-
 
 
 
