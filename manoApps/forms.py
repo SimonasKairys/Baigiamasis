@@ -1,4 +1,6 @@
 from django import forms
+from django.core.validators import MinLengthValidator
+
 from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent, CarMileage
 from django.core.exceptions import ValidationError
 
@@ -30,7 +32,7 @@ class AddCarForm(forms.Form):
     car = forms.ModelChoiceField(queryset=Car.objects.all())
     car_model = forms.ModelChoiceField(queryset=CarModel.objects.none())
     car_year = forms.IntegerField()
-    VIN = forms.CharField(max_length=20)
+    VIN = forms.CharField(max_length=20, validators=[MinLengthValidator(17)])
     car_plate = forms.CharField(max_length=10)
     fuel_type = forms.ChoiceField(choices=[('gasoline', 'Gasoline'), ('diesel', 'Diesel')])
     odometer_value = forms.IntegerField()
@@ -164,8 +166,5 @@ class CarServiceEventForm(forms.ModelForm):
         self.fields['car'].queryset = self.get_user_cars(user)
 
     def get_user_cars(self, user):
-        car_ids = CarModel.objects.filter(usercar__user=user).values_list('id', flat=True).distinct()
-        return CarModel.objects.filter(id__in=car_ids)
-
-
+        return UserCar.objects.filter(user=user)
 
