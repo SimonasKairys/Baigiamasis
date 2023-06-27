@@ -16,10 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.template.context_processors import request
 
 
 urlpatterns = [
     path("", include('manoApps.urls')),
     path("admin/", admin.site.urls),
 
+]
+
+TEMPLATES = [
+    {
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+            ],
+        },
+    },
 ]
