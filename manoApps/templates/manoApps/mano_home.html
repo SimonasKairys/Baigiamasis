@@ -15,16 +15,20 @@
                         <td>{{ car_data.average_fuel_consumption|floatformat:3 }}</td>
                     </tr>
                     <tr>
-                        <th>Total Price</th>
+                        <th>Total Price (EUR) </th>
                         <td>{{ car_data.total_price|floatformat:3 }}</td>
                     </tr>
                     <tr>
-                        <th>Total Fuel</th>
+                        <th>Total Fuel (L) </th>
                         <td>{{ car_data.total_fuel|floatformat:3 }}</td>
                     </tr>
                     <tr>
-                        <th>Total Driven Distance</th>
+                        <th>Total Driven Distance (km) </th>
                         <td>{{ car_data.total_driven_distance }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total service Price (EUR) </th>
+                        <td>{{ car_data.total_service_price }}</td>
                     </tr>
                 </table>
             </div>

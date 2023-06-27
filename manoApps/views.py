@@ -41,6 +41,10 @@ def home_page(request):
             car_model = user_car.car_model.model
             car_plate = user_car.car_plate
 
+            # Get total service price for the car
+            total_service_price = CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price'))['total_service_price']
+            total_service_price = total_service_price if total_service_price is not None else 0
+
             unique_cars_data.append({
                 'user_car_id': user_car.id,
                 'car_make': car_make,
@@ -52,6 +56,7 @@ def home_page(request):
                 'total_fuel': aggregated_data['total_fuel'],
                 'total_price': aggregated_data['total_price'],
                 'average_fuel_consumption': average_fuel_consumption,
+                'total_service_price': total_service_price,  # Add total service price to context
             })
 
     context = {
