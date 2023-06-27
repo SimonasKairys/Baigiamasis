@@ -28,13 +28,13 @@
                     </tr>
                     <tr>
                         <th>Total service Price (EUR) </th>
-                        <td>{{ car_data.total_service_price }}</td>
+                        <td>{{ car_data.total_service_price|floatformat:2 }}</td>
                     </tr>
                 </table>
             </div>
         </div>
+    {% empty %}
+        <p>No cars found, Add car</p>
     {% endfor %}
-
 </div>
-
 {% endblock content %}
