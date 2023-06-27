@@ -1,6 +1,5 @@
 from django import forms
 from django.core.validators import MinLengthValidator
-
 from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent, CarMileage
 from django.core.exceptions import ValidationError
 
@@ -41,8 +40,15 @@ class AddCarForm(forms.Form):
     gas_station_name = forms.ModelChoiceField(
         queryset=GasStationName.objects.all(), required=True, label='Gas Station Name')
     gas_station_location = forms.CharField(required=True, label='Gas Station Location')
-    date = forms.DateField()
     price = forms.DecimalField(max_digits=5, decimal_places=3)
+    date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'format': 'YYYY-MM-DD'
+            }
+        )
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -124,8 +130,15 @@ class AddMileageForm(forms.Form):
     gas_station_name = forms.ModelChoiceField(
         queryset=GasStationName.objects.all(), required=True, label='Gas Station Name')
     gas_station_location = forms.CharField(label='Gas Station Location', max_length=100)
-    date = forms.DateField()
     price = forms.DecimalField(label='Price EUR', max_digits=5, decimal_places=3)
+    date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'format': 'yyyy-mm-dd'
+            }
+        )
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -157,6 +170,14 @@ class AddMileageForm(forms.Form):
 
 
 class CarServiceEventForm(forms.ModelForm):
+    date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'format': 'YYYY-MM-DD'
+            }
+        )
+    )
     class Meta:
         model = CarServiceEvent
         fields = ['car', 'name', 'date', 'description', 'price']

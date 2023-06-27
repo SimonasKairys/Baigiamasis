@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+{% endblock %}
+
 {% block content %}
 
 <form method="POST">
@@ -10,4 +17,14 @@
   <p>
     <a href="{% url 'Index' %}">Back to Home</a>
   </p>
+      <script>
+    document.getElementById('id_car').onchange = function () {
+      this.form.submit();
+    }
+
+
+    $(function() {
+      $("#id_date").datepicker();
+    });
+  </script>
 {% endblock %}

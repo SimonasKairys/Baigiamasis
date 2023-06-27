@@ -155,7 +155,6 @@ def add_car(request):
     return render(request, 'manoApps/add_car.html', {'form': form})
 
 
-
 @login_required
 def your_car_info(request):
     user_cars = UserCar.objects.filter(user=request.user)
@@ -200,10 +199,6 @@ def edit_car(request, car_id, carmileage_id):
         'carmileage_id': carmileage_id
     }
     return render(request, 'manoApps/edit_car.html', context)
-
-
-
-
 
 
 @login_required
