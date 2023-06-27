@@ -317,7 +317,7 @@ def service_edit(request, service_id):
 
 
 @login_required
-def service_delete(service_id):
+def service_delete(request, service_id):
     service = get_object_or_404(CarServiceEvent, id=service_id)
     service.delete()
     return redirect('mano_service')

@@ -63,7 +63,7 @@ class CarMileage(models.Model):
 
 class CarServiceEvent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    car = models.ForeignKey(CarModel, on_delete=models.CASCADE)
+    car = models.ForeignKey(UserCar, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     date = models.DateField()
     description = models.TextField()
