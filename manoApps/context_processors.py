@@ -1,13 +1,8 @@
-import logging, httpagentparser
+import httpagentparser
+import logging
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
-
-
-def add_ip_and_browser(request):
-    browser_info = request.META['HTTP_USER_AGENT']
-    ip_address = get_client_ip(request)
-    return {'browser_info': browser_info, 'ip_address': ip_address}
 
 
 def get_client_ip(request):

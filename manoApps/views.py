@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import UserCar, GasStation, GasStationName, CarServiceEvent, CarModel, CarMileage
-from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm, CarServiceEventForm, CarMileageForm
+from .forms import AddCarForm, EditCarForm, EditGasStationForm, AddMileageForm, CarServiceEventForm
 from datetime import date
 from django.db.models import Sum, F, FloatField
 from django.contrib import messages
