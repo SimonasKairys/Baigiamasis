@@ -17,7 +17,13 @@
       <tbody>
         {% for field in form %}
         <tr>
-          <td class="text-right"><label>{{ field.label }}</label></td>
+          <td class="text-right">
+            {% if field.name == 'price' %}
+              <label>Price per litre</label>
+            {% else %}
+              <label>{{ field.label }}</label>
+            {% endif %}
+          </td>
           <td>
             {{ field }}
               {% for error in field.errors %}

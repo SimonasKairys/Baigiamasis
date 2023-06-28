@@ -2,6 +2,7 @@ from django import forms
 from django.core.validators import MinLengthValidator
 from .models import Car, CarModel, UserCar, GasStation, GasStationName, CarServiceEvent, CarMileage
 from django.core.exceptions import ValidationError
+from datetime import datetime
 
 
 class GasStationNameSelectWidget(forms.Select):
@@ -38,7 +39,8 @@ class AddCarForm(forms.Form):
     # laukas 'car_model' kuris neturi jokiu CarModel objektų, taciau atsinaujina
     car_model = forms.ModelChoiceField(queryset=CarModel.objects.none())
     # laukas 'car_year' sveikasis skaicius
-    car_year = forms.IntegerField()
+    current_year = datetime.now().year
+    car_year = forms.IntegerField(min_value=1900, max_value=current_year)
     # laukas 'VIN' ne maziau 17 ir ne daugiau 20 simboliu
     VIN = forms.CharField(max_length=20, validators=[MinLengthValidator(17)])
     # laukas 'car_plate' ne daugiau 10 simboliu
@@ -56,7 +58,7 @@ class AddCarForm(forms.Form):
         queryset=GasStationName.objects.all(), required=True, label='Gas Station Name')
     # laukas 'gas_station_location' degalines vieta, privaloma
     gas_station_location = forms.CharField(required=True, label='Gas Station Location')
-    # laukas 'price' max 5 skaiciai, po kablelio max 3
+    # laukas 'price' viso max 5 skaiciai, po kablelio max 3
     price = forms.DecimalField(max_digits=5, decimal_places=3)
     # Laukas 'date' skirtas ivesti datai
     date = forms.DateField(
