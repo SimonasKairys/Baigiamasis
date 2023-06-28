@@ -38,7 +38,7 @@ class AddCarForm(forms.Form):
     # laukas 'car_model' kuris neturi jokiu CarModel objektų, taciau atsinaujina
     car_model = forms.ModelChoiceField(queryset=CarModel.objects.none())
     # laukas 'car_year' sveikasis skaicius
-    car_year = forms.IntegerField(max_length=4)
+    car_year = forms.IntegerField()
     # laukas 'VIN' ne maziau 17 ir ne daugiau 20 simboliu
     VIN = forms.CharField(max_length=20, validators=[MinLengthValidator(17)])
     # laukas 'car_plate' ne daugiau 10 simboliu
@@ -63,7 +63,8 @@ class AddCarForm(forms.Form):
         widget=forms.DateInput(
             attrs={
                 'type': 'date',
-                'format': 'YYYY-MM-DD'
+                'format': 'YYYY-MM-DD',
+                'endDate': '+0d'
             }
         )
     )
