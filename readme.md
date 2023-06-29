@@ -1,11 +1,11 @@
-Šis projektas skirtas kurti ir valdyti vartotojų automobilių duomenų bazę, įskaitant informaciją apie automobilius, degalines ir automobilio aptarnavimą. Vartotojas gali fiksuoti tokią informaciją kaip degalų kiekis automobilio bake, automobilio rida, degalų kaina ir aptarnavimo istorija bei kaina.
+<p> Šis projektas skirtas kurti ir valdyti vartotojų automobilių duomenų bazę, įskaitant informaciją apie automobilius, degalines ir automobilio aptarnavimą. Vartotojas gali fiksuoti tokią informaciją kaip degalų kiekis automobilio bake, automobilio rida, degalų kaina ir aptarnavimo istorija bei kaina.</p>
 
-<h3>admin.py:</h3>
+<h3><font color="#EBD56E">admin.py:</font></h3>
 Importuojami reikalingi Django modeliai iš models.py failo.
 
 Sukuriamos CarAdmin, CarModelAdmin, UserCarAdmin, GasStationNameAdmin klasės  kurios bus rodomos Django administracijos puslapyje
 
-<h3>forms.py:</h3>
+<h3><font color="#EBD56E">forms.py:</font></h3>
 <b>GasStationNameSelectWidget:</b> Specializuota forma, kuri leidžia sukurti pasirinkimo lauką su papildomomis savybėmis.
 
 <b>UserCarForm:</b> ModelForm tipo forma skirta UserCar modeliui.
@@ -20,7 +20,7 @@ Sukuriamos CarAdmin, CarModelAdmin, UserCarAdmin, GasStationNameAdmin klasės  k
 
 <b>CarServiceEventForm:</b> forma skirta CarServiceEvent modeliui.
 
-<h3>models.py:</h3>
+<h3><font color="#EBD56E">models.py:</font></h3>
 
 <b>Car:</b> automobilio gamintojas
 
@@ -36,7 +36,7 @@ Sukuriamos CarAdmin, CarModelAdmin, UserCarAdmin, GasStationNameAdmin klasės  k
 
 <b>CarServiceEvent:</b> Šis modelis skirta fiksuoti bet kokį aptarnavimo įvykį, susijusį su vartotojo automobiliu. Jis yra susijęs su User ir UserCar modeliais ir fiksuoja tokią informaciją, kaip pavadinimas, data, aptarnavimo aprašymas ir jo kaina.
 
-<h3>views.py:</h3>
+<h3><font color="#EBD56E">views.py:</font></h3>
 
 <b>home_page:</b> atvaizduoja pagrindinį puslapį, jei naudotojas neprisijungęs, nukreipia į prisijungimo puslapį, gauna susijusius automobilio duomenis iš duomenų bazės ir atvaizduoja.
 
