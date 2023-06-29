@@ -21,8 +21,7 @@ class UserCarForm(forms.ModelForm):
         # nurodom formos modeli UserCar
         model = UserCar
         #  nurodom laukus kurie turi buti formoje
-        fields = ('car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank', 'driven_distance',
-                  'VIN', 'car_plate')
+        fields = ('car_model', 'car_year', 'fuel_type', 'VIN', 'car_plate')
 
 
 class CarMileageForm(forms.ModelForm):

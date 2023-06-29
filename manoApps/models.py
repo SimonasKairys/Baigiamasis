@@ -32,12 +32,6 @@ class UserCar(models.Model):
     car_year = models.IntegerField()
     # auto degalai, txt max 50
     fuel_type = models.CharField(max_length=50)
-    # auto rida, sveikasis, defaultine 0, nenaudojamas
-    odometer_value = models.IntegerField(default=0)
-    # auto nuvaziuotas astumas, defaultine 0, nenaudojamas
-    driven_distance = models.IntegerField(default=0)
-    # auto degalu kiekis bake, su kableliu, defaultine 0, nenaudojamas
-    fuel_in_tank = models.FloatField(default=0)
     # auto vin kodas, min 17 / max 20, unikalus, defaultine 0
     VIN = models.CharField(max_length=20, unique=True, default=0, validators=[MinLengthValidator(17)])
     # auto numeriai, max 10, unikalus
@@ -66,8 +60,7 @@ class GasStation(models.Model):
     user_car = models.ForeignKey(UserCar, on_delete=models.CASCADE)
     # data
     date = models.DateField()
-    # saugoti degalų kainą max 5, po kablelio 3, defaultine 0, nenaudojamas
-    price = models.DecimalField(default=0, max_digits=5, decimal_places=3)
+
 
     def __str__(self):
         # grazina degalines pavadinima kaip txt

@@ -11,7 +11,7 @@ class CarModelAdmin(admin.ModelAdmin):
 
 # sukuriam klase UserCarAdmin (admin psl) ir nurodom kas bus rodoma UserCar modelyje
 class UserCarAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'car_model', 'car_year', 'fuel_type', 'odometer_value', 'fuel_in_tank')
+    list_display = ('id', 'user', 'car_model', 'car_year', 'fuel_type')
 
 # sukuriam klase GasStationNameAdmin (admin psl) ir nurodom kas bus rodoma GasStationName modelyje
 class GasStationNameAdmin(admin.ModelAdmin):
