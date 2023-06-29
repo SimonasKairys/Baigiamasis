@@ -6,4 +6,5 @@
 /manoApps/migrations
 /manoApps/istrinti.py
 /debug.log
-/manoApps/migrations/
+/manoApps/migrations
+
