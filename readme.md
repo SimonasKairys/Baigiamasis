@@ -37,7 +37,7 @@ Sukuriamos CarAdmin, CarModelAdmin, UserCarAdmin, GasStationNameAdmin klasės  k
 <b>CarServiceEvent:</b> Šis modelis skirta fiksuoti bet kokį aptarnavimo įvykį, susijusį su vartotojo automobiliu. Jis yra susijęs su User ir UserCar modeliais ir fiksuoja tokią informaciją, kaip pavadinimas, data, aptarnavimo aprašymas ir jo kaina.
 
 <h3>views.py:</h3>
-<p>
+
 <b>home_page:</b> atvaizduoja pagrindinį puslapį, jei naudotojas neprisijungęs, nukreipia į prisijungimo puslapį, gauna susijusius automobilio duomenis iš duomenų bazės ir atvaizduoja.
 
 <b>register:</b> naudotojo registracija, patikrina formos duomenis, išsaugo naują naudotoją ir nukreipia į prisijungimo puslapį.
@@ -65,4 +65,3 @@ Sukuriamos CarAdmin, CarModelAdmin, UserCarAdmin, GasStationNameAdmin klasės  k
 <b>service_edit:</b> leidžia naudotojui redaguoti aptarnavimo įvykį, tvarko formos pateikimą, atnaujina aptarnavimo įvykį ir išsaugo pakeitimus.
 
 <b>service_delete:</b> Ištrina aptarnavimo įvykį iš duomenų bazės.
-</p>
