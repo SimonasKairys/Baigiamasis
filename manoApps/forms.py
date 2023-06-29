@@ -215,6 +215,11 @@ class AddMileageForm(forms.Form):
         return cleaned_data
 
 
+def get_user_cars(user):
+    # Gaunam userio auto iš UserCar
+    return UserCar.objects.filter(user=user)
+
+
 class CarServiceEventForm(forms.ModelForm):
     # Sukuriam 'date' lauka
     date = forms.DateField(
@@ -235,9 +240,4 @@ class CarServiceEventForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # grazina 'car' susijusius su konkreciu useriu
-        self.fields['car'].queryset = self.get_user_cars(user)
-
-    def get_user_cars(self, user):
-        # Gaunam userio auto iš UserCar
-        return UserCar.objects.filter(user=user)
-
+        self.fields['car'].queryset = get_user_cars(user)

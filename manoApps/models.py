@@ -53,6 +53,7 @@ class GasStationName(models.Model):
 
 class GasStation(models.Model):
     # saugom degalines pavadinima, max 100
+    objects = None
     name = models.CharField(max_length=100)
     # degalines vieta, max 200
     location = models.CharField(max_length=200)
@@ -61,7 +62,6 @@ class GasStation(models.Model):
     # data
     date = models.DateField()
 
-
     def __str__(self):
         # grazina degalines pavadinima kaip txt
         return self.name
@@ -69,6 +69,7 @@ class GasStation(models.Model):
 
 class CarMileage(models.Model):
     # jungtis su UserCar
+    objects = None
     user_car = models.ForeignKey(UserCar, on_delete=models.CASCADE)
     # jungtis su GasStation
     gas_station = models.ForeignKey(GasStation, on_delete=models.CASCADE)
@@ -97,3 +98,4 @@ class CarServiceEvent(models.Model):
     description = models.TextField()
     # kaina max 5, po kablelio 2, defaultine 0
     price = models.DecimalField(default=0, max_digits=5, decimal_places=2)
+    

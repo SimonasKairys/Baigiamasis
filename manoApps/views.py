@@ -30,8 +30,6 @@ def home_page(request):
         if car_mileages:
             # auto modeli
             car_data = user_car.car_model
-            # auto numerius
-            car_plate = user_car.car_plate
 
             # skaiciuojam duomenis is CarMileage lenteles pagal parametrus
             aggregated_data = car_mileages.aggregate(
@@ -40,11 +38,8 @@ def home_page(request):
                 total_price=Sum(F('fuel_in_tank') * F('price'), output_field=FloatField())
             )
 
-            # skaiciuojam kiek ridos eiluciu
-            car_mileage_count = car_mileages.count()
-
             # skaiciuojam vidutines sanaudas
-            average_fuel_consumption = (aggregated_data['total_fuel'] / aggregated_data['total_driven_distance']) * 100 \
+            average_fuel_consumption = (aggregated_data['total_fuel'] / aggregated_data['total_driven_distance']) * 100\
                 if aggregated_data['total_fuel'] and aggregated_data['total_driven_distance'] else 0
             # apvalinam sanaudas iki 3 skaiciu po kablelio
             average_fuel_consumption = "{:.3f}".format(average_fuel_consumption)
@@ -57,7 +52,9 @@ def home_page(request):
             car_plate = user_car.car_plate
 
             # serviso kaina
-            total_service_price = CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price'))['total_service_price']
+            total_service_price = \
+                CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price')
+                                                                       )['total_service_price']
             total_service_price = total_service_price if total_service_price is not None else 0
 
             # viska is virsaus sudedam cia
@@ -144,13 +141,7 @@ def logged_home(request):
 @login_required  # tikrina ar prisijunges
 def add_car(request):
     # gaunam car duomenis jeigu yra arba None
-    car_id = request.GET.get('car') if request.method == 'GET' else None
-
-    # sukuriam pradinius duomenis iskaitant siandien
-    initial_data = {'date': date.today()}
-    if car_id is not None:
-        initial_data['car'] = car_id
-    form = AddCarForm(initial=initial_data)
+    request.GET.get('car') if request.method == 'GET' else None
 
     # tikrinam ar POST tipas,
     if request.method == 'POST':
@@ -216,7 +207,7 @@ def add_car(request):
     return render(request, 'manoApps/add_car.html', {'form': form})
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def your_car_info(request):
     # gaunam visus userio auto
     user_cars = UserCar.objects.filter(user=request.user)
@@ -224,7 +215,7 @@ def your_car_info(request):
     return render(request, 'manoApps/your_car_info.html', {'user_cars': user_cars})
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def edit_car(request, car_id, carmileage_id):
     # gaunam UserCar pagal car_id ir prisijungusi useri
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
@@ -283,7 +274,7 @@ def edit_car(request, car_id, carmileage_id):
     return render(request, 'manoApps/edit_car.html', context)
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def delete_car(request, car_id, gas_station_id):
     # gaunam UserCar pagal car_id ir prisijungusi useri
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
@@ -306,7 +297,7 @@ def delete_car(request, car_id, gas_station_id):
     return redirect('your_car_info')
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def add_mileage(request, user_car_id):
     # gaunam original_user_car pagal user_car_id
     original_user_car = get_object_or_404(UserCar, id=user_car_id)
@@ -375,7 +366,7 @@ def add_mileage(request, user_car_id):
     return render(request, 'manoApps/add_mileage.html', {'form': form, 'user_car': original_user_car})
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def mano_service(request):
     # gaunam CarServiceEvent pagal user
     services = CarServiceEvent.objects.filter(user=request.user)
@@ -383,7 +374,7 @@ def mano_service(request):
     return render(request, 'manoApps/mano_service.html', {'services': services})
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def service_new(request):
     # gaunam CarModel pagal user
     user_cars = CarModel.objects.filter(usercar__user=request.user).values_list('id', flat=True).distinct()
@@ -420,7 +411,7 @@ def service_new(request):
     return render(request, 'manoApps/service_new.html', {'form': form})
 
 
-@login_required # tikrina ar prisijunges
+@login_required  # tikrina ar prisijunges
 def service_edit(request, service_id):
     # gaunam CarServiceEvent pagal service_id
     service = get_object_or_404(CarServiceEvent, id=service_id)
@@ -442,8 +433,8 @@ def service_edit(request, service_id):
     return render(request, 'manoApps/service_edit.html', {'form': form})
 
 
-@login_required # tikrina ar prisijunges
-def service_delete(request, service_id):
+@login_required  # tikrina ar prisijunges
+def service_delete(service_id):
     # gaunam CarServiceEvent pagal service_id
     service = get_object_or_404(CarServiceEvent, id=service_id)
     # trinam is db
