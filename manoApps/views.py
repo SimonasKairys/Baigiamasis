@@ -28,9 +28,6 @@ def home_page(request):
         # gaunam auto rida
         car_mileages = CarMileage.objects.filter(user_car=user_car)
         if car_mileages:
-            # auto modeli
-            car_data = user_car.car_model
-
             # skaiciuojam duomenis is CarMileage lenteles pagal parametrus
             aggregated_data = car_mileages.aggregate(
                 total_driven_distance=Sum('driven_distance'),
@@ -53,8 +50,7 @@ def home_page(request):
 
             # serviso kaina
             total_service_price = \
-                CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price')
-                                                                       )['total_service_price']
+                CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price'))['total_service_price']
             total_service_price = total_service_price if total_service_price is not None else 0
 
             # viska is virsaus sudedam cia
@@ -62,15 +58,14 @@ def home_page(request):
                 'user_car_id': user_car.id,
                 'car_make': car_make,
                 'car_model': car_model,
-                'car_data': car_data,
                 'car_plate': car_plate,
-                'car_mileages': car_mileages,
                 'total_driven_distance': aggregated_data['total_driven_distance'],
                 'total_fuel': aggregated_data['total_fuel'],
                 'total_price': aggregated_data['total_price'],
                 'average_fuel_consumption': average_fuel_consumption,
                 'total_service_price': total_service_price,
             })
+
     # kas bus perduodama su context
     context = {
         'user': request.user,
@@ -80,6 +75,7 @@ def home_page(request):
     }
     # grazinam visa info (context) i url
     return render(request, 'manoApps/mano_home.html', context)
+
 
 
 def register(request):
