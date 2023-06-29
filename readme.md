@@ -3,8 +3,7 @@
 simple user nėra.
 
 Admin:
-usr: admin
-psw: admin
+usr & psw: admin
 <br />
 <h3>admin.py:</h3>
 Importuojami reikalingi Django modeliai iš models.py failo.
