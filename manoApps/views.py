@@ -77,7 +77,7 @@ def home_page(request):
     return render(request, 'manoApps/mano_home.html', context)
 
 
-
+# POST grazina True, False yra GET.
 def register(request):
     # tikrina ar POST tipas,
     if request.method == 'POST':
@@ -157,7 +157,7 @@ def add_car(request):
             # issaugom db
             user_car.save()
 
-            # priskiriam duomenis kuria buvo isvalyti ????
+            # saugomi duomemys kurie yra formoje
             gas_station_name = form.cleaned_data['gas_station_name']
 
             # tikrinam ar gas_station_name yra GasStationName
@@ -422,7 +422,7 @@ def service_edit(request, service_id):
             # nukreipiam
             return redirect('mano_service')
     else:
-        # sukuriam CarServiceEventForm pagal user ir esama ivyki
+        # grazinam i url su duomenim is formos
         form = CarServiceEventForm(request.user, instance=service)
 
     # grazinam i url su duomenim is formos
