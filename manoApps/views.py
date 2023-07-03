@@ -50,7 +50,8 @@ def home_page(request):
 
             # serviso kaina
             total_service_price = \
-                CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price'))['total_service_price']
+                CarServiceEvent.objects.filter(car=user_car).aggregate(total_service_price=Sum('price')
+                                                                       )['total_service_price']
             total_service_price = total_service_price if total_service_price is not None else 0
 
             # viska is virsaus sudedam cia
