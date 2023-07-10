@@ -1,5 +1,6 @@
-from django.urls import path
+
 from . import views
+from django.urls import path
 
 urlpatterns = [
     path('', views.home_page, name='Index'),
@@ -18,5 +19,7 @@ urlpatterns = [
     path('service_delete/<int:service_id>/', views.service_delete, name='service_delete'),
     path('Apie/', views.apie, name='apie'),
     path('Kontaktai/', views.kontaktai, name='kontaktai'),
+
+
 
 ]

@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-2@zee=!k92krknj19zhj9_!jzuo1ckiofxi9=cz^uyt!y9=4v7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'kazkas.com', '*']
@@ -124,6 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'manoApps/static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'manoApps/static/admin')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

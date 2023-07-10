@@ -12,6 +12,12 @@ from django.contrib import messages
 
 
 def home_page(request):
+    """
+    funkcija skirta atvaizduoti home psl
+
+    :param request: HTTP užklausa
+    :return: atvaizduoja home psl
+    """
     # jeigu useris neprisijunges grazinam i login
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
@@ -80,6 +86,12 @@ def home_page(request):
 
 # POST grazina True, False yra GET.
 def register(request):
+    """
+    vartotjo registracija
+
+    :param request: HTTP užklausa
+    :return: pavykus nukreipia i login psl, kt atveju parodo klaidas registracijos psl
+    """
     # tikrina ar POST tipas,
     if request.method == 'POST':
         # sukuria UserCreationForm naudojant ivestus duomenis
@@ -98,6 +110,12 @@ def register(request):
 
 
 def user_login(request):
+    """
+    vartotojo prisijungimas
+
+    :param request: HTTP užklausa
+    :return: pavykus nukreipia i index psl arba parodo klaidas login psl
+    """
     # tikrina ar POST tipas,
     if request.method == 'POST':
         # sukuria AuthenticationForm naudojant ivestus duomenis
@@ -124,6 +142,12 @@ def user_login(request):
 
 
 def user_logout(request):
+    """
+    vartotojo atsijungimas
+
+    :param request: HTTP užklausa
+    :return: grazina i login psl
+    """
     # atjungia useri
     logout(request)
     # grazina i login url
@@ -131,12 +155,23 @@ def user_logout(request):
 
 
 def logged_home(request):
+    """
+
+    :param request: HTTP užklausa
+    :return: pagrindinis psl prisijungus
+    """
     # atvaizduoja kaip pagrindini kai prisijunges useris
     return render(request, 'manoApps/mano_home.html')
 
 
 @login_required  # tikrina ar prisijunges
 def add_car(request):
+    """
+    funkcija skirta naujo automobilio pridėjimui
+
+    :param request: HTTP užklausa
+    :return: pavykus nukreipia i car info psl, kt atveju parodo klaidas.
+    """
     # gaunam car duomenis jeigu yra arba None
     request.GET.get('car') if request.method == 'GET' else None
 
@@ -206,6 +241,12 @@ def add_car(request):
 
 @login_required  # tikrina ar prisijunges
 def your_car_info(request):
+    """
+    atvaizduoja vartotojo uzregistruotų automobilių info
+
+    :param request: HTTP užklausa
+    :return: atvaizduoja automobilių info
+    """
     # gaunam visus userio auto
     user_cars = UserCar.objects.filter(user=request.user)
     # atvaizuodam url su duomenim
@@ -214,6 +255,14 @@ def your_car_info(request):
 
 @login_required  # tikrina ar prisijunges
 def edit_car(request, car_id, carmileage_id):
+    """
+    automobilio informacijos redagavimas
+
+    :param request: HTTP užklausa
+    :param car_id: redaguojamo automobilio id
+    :param carmileage_id: redaguojamo automobilio id carmileage lentelėje
+    :return: pavykus grazina i car info psl, kt parodo klaidas.
+    """
     # gaunam UserCar pagal car_id ir prisijungusi useri
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
     # gaunam GasStation pagal user_car
@@ -273,6 +322,14 @@ def edit_car(request, car_id, carmileage_id):
 
 @login_required  # tikrina ar prisijunges
 def delete_car(request, car_id, gas_station_id):
+    """
+    automobilio ištrynimas
+
+    :param request: HTTP užklausa
+    :param car_id: automobilio id kuri nurima pašalinti
+    :param gas_station_id: degalinės id kurią nurima pašalinti
+    :return: gražina i car info psl
+    """
     # gaunam UserCar pagal car_id ir prisijungusi useri
     user_car = get_object_or_404(UserCar, id=car_id, user=request.user)
     # gaunam GasStation pagal gas_station_id ir prisijungusi useri
@@ -296,6 +353,13 @@ def delete_car(request, car_id, gas_station_id):
 
 @login_required  # tikrina ar prisijunges
 def add_mileage(request, user_car_id):
+    """
+    automobilio ridos atnaujinmas
+
+    :param request: HTTP užklausa
+    :param user_car_id: vartotojo automobilio id
+    :return: pavykus grazina i car info psl, kt parodo klaidas
+    """
     # gaunam original_user_car pagal user_car_id
     original_user_car = get_object_or_404(UserCar, id=user_car_id)
     # pradiniai duomenys su siandien
@@ -365,6 +429,12 @@ def add_mileage(request, user_car_id):
 
 @login_required  # tikrina ar prisijunges
 def mano_service(request):
+    """
+    parodo įrašus apie atliktus remontus
+
+    :param request: HTTP užklausa
+    :return: gražina i psl kur atvaizduojamos suteiktos paslaugos
+    """
     # gaunam CarServiceEvent pagal user
     services = CarServiceEvent.objects.filter(user=request.user)
     # grazinam i url su services duomenim
@@ -373,6 +443,12 @@ def mano_service(request):
 
 @login_required  # tikrina ar prisijunges
 def service_new(request):
+    """
+    naujos automobilio paslaugos registravimas
+
+    :param request: HTTP užklausa
+    :return: nukreipia i palaugu atvaizdavimo puslapi
+    """
     # gaunam CarModel pagal user
     user_cars = CarModel.objects.filter(usercar__user=request.user).values_list('id', flat=True).distinct()
     # tikrina ar neturi auto
@@ -410,6 +486,13 @@ def service_new(request):
 
 @login_required  # tikrina ar prisijunges
 def service_edit(request, service_id):
+    """
+    užregistruotų paslaugų keitimas
+
+    :param request: HTTP užklausa
+    :param service_id: paslaugos id
+    :return: nukreipia i palaugu atvaizdavimo puslapi
+    """
     # gaunam CarServiceEvent pagal service_id
     service = get_object_or_404(CarServiceEvent, id=service_id)
     # tikrinam ar POST uzklausa
@@ -432,6 +515,12 @@ def service_edit(request, service_id):
 
 @login_required  # tikrina ar prisijunges
 def service_delete(service_id):
+    """
+    paslaugos ištrynimas
+
+    :param service_id: paslaugos id
+    :return: nukreipia i palaugu atvaizdavimo puslapi
+    """
     # gaunam CarServiceEvent pagal service_id
     service = get_object_or_404(CarServiceEvent, id=service_id)
     # trinam is db
@@ -441,10 +530,18 @@ def service_delete(service_id):
 
 
 def apie(request):
+    """
+    :param request: HTTP užklausa
+    :return: atvaizduoja apie psl
+    """
     # nukreipia i url
     return render(request, 'manoApps/apie.html')
 
 
 def kontaktai(request):
+    """
+    :param request: HTTP užklausa
+    :return: atvaizduoja kontaktai psl
+    """
     # nukreipia i url
     return render(request, 'manoApps/kontaktai.html')
