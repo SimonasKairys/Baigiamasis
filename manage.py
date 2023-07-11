@@ -22,20 +22,3 @@ if __name__ == "__main__":
     main()
 
 
-# # get the directory of the current Python script file
-# SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-#
-# # path to your Django project's manage.py file
-# MANAGE_PY_PATH = os.path.join(SCRIPT_DIR, 'manage.py')
-#
-# # command to run the Django development server
-# COMMAND = f'python {MANAGE_PY_PATH} runserver'
-#
-# # path to the Microsoft Edge executable file
-# EDGE_PATH = r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
-#
-# # open the application URL in Microsoft Edge
-# subprocess.run([EDGE_PATH, 'http://127.0.0.1:8000/'])
-
-# open a new terminal window and run the command
-# subprocess.call(['cmd.exe', '/k', COMMAND])
