@@ -1,7 +1,7 @@
-<p> Šis projektas skirtas kurti ir valdyti vartotojų automobilių duomenų bazę, įskaitant informaciją apie automobilius, degalines ir automobilio aptarnavimą. Vartotojas gali fiksuoti tokią informaciją kaip degalų kiekis automobilio bake, automobilio rida, degalų kaina ir aptarnavimo istorija bei kaina.</p>
-<br />
-python 3.11
-<br />
+<p> Šis projektas skirtas kurti ir valdyti vartotojų automobilių duomenų bazę, įskaitant informaciją apie automobilius, degalines ir automobilio aptarnavimą. Vartotojas gali fiksuoti tokią informaciją kaip degalų kiekis automobilio bake, automobilio rida, degalų kaina ir aptarnavimo istorija bei kaina (sqlite).</p>
+
+<h2>python 3.11</h2>
+
 <h3>admin.py:</h3>
 Importuojami reikalingi Django modeliai iš models.py failo.
 
