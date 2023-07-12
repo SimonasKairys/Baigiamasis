@@ -18,7 +18,3 @@ First, clone this repository to your local machine using
 
 Navigate to the project directory and install the required dependencies.
 - pip install -r requirements.txt
-
-## Author
-
-Simonas Kairys
