@@ -14,10 +14,10 @@ A comprehensive database solution for consumer car information, including cars, 
 ## Installation
 
 First, clone this repository to your local machine using 
-`https://github.com/SimonasKairys/Baigiamasis.git`
+- `https://github.com/SimonasKairys/Baigiamasis.git`
 
 Navigate to the project directory and install the required dependencies.
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
 ## Author
 
