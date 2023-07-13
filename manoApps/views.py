@@ -101,7 +101,7 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('Index')
+                return redirect('index')
     else:
         form = AuthenticationForm()
     return render(request, 'manoApps/login.html', {'form': form})
