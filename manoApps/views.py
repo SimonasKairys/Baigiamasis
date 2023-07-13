@@ -88,10 +88,10 @@ def register(request):
 
 def user_login(request):
     """
-    vartotojo prisijungimas
+    user login
 
-    :param request: HTTP užklausa
-    :return: pavykus nukreipia i index psl arba parodo klaidas login psl
+    :param request: HTTP request
+    :return: return to login page
     """
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -120,6 +120,7 @@ def user_logout(request):
 
 def logged_home(request):
     """
+    returns to home page after login
 
     :param request: HTTP request
     :return: home page after login
