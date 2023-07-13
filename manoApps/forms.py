@@ -46,8 +46,7 @@ class AddCarForm(forms.Form):
         widget=forms.DateInput(
             attrs={
                 'type': 'date',
-                'format': 'YYYY-MM-DD',
-                'endDate': '+0d'
+
             }
         )
     )
@@ -135,7 +134,7 @@ class AddMileageForm(forms.Form):
         widget=forms.DateInput(
             attrs={
                 'type': 'date',
-                'format': 'yyyy-mm-dd'
+
             }
         )
     )
