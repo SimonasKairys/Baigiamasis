@@ -65,5 +65,5 @@ class CarServiceEvent(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
     description = models.TextField()
-    price = models.DecimalField(default=0, max_digits=5, decimal_places=2)
+    price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     
